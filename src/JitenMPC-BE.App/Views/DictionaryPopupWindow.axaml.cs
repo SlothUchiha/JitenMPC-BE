@@ -7,6 +7,7 @@ using JitenMpcBe.Controls;
 using JitenMpcBe.Models;
 using JitenMpcBe.Native;
 using JitenMpcBe.Services;
+using JitenMpcBe.Text;
 
 namespace JitenMpcBe.Views;
 
@@ -17,8 +18,9 @@ public sealed partial class DictionaryPopupWindow : Window
     private readonly Border _border;
     private readonly StackPanel _root;
     private readonly Button _headwordButton;
-    private readonly TextBlock _headword, _reading, _pitchDiagram, _meta, _meaning, _conjugation, _deck, _state;
-    private readonly WrapPanel _stateActions, _reviewPanel;
+    private readonly TextBlock _headword, _reading, _meta, _meaning, _conjugation, _deck, _state;
+    private readonly StackPanel _furiganaPanel;
+    private readonly WrapPanel _pitchDiagramPanel, _stateActions, _reviewPanel;
     private readonly Border _deckPicker;
     private readonly StackPanel _deckPickerPanel;
     private readonly Dictionary<string, Button> _buttons = new(StringComparer.OrdinalIgnoreCase);
@@ -35,8 +37,9 @@ public sealed partial class DictionaryPopupWindow : Window
         _root = this.FindControl<StackPanel>("RootStack")!;
         _headwordButton = this.FindControl<Button>("HeadwordButton")!;
         _headword = this.FindControl<TextBlock>("HeadwordText")!;
+        _furiganaPanel = this.FindControl<StackPanel>("FuriganaPanel")!;
         _reading = this.FindControl<TextBlock>("ReadingText")!;
-        _pitchDiagram = this.FindControl<TextBlock>("PitchDiagramText")!;
+        _pitchDiagramPanel = this.FindControl<WrapPanel>("PitchDiagramPanel")!;
         _meta = this.FindControl<TextBlock>("MetaText")!;
         _meaning = this.FindControl<TextBlock>("MeaningText")!;
         _conjugation = this.FindControl<TextBlock>("ConjugationText")!;
@@ -95,23 +98,30 @@ public sealed partial class DictionaryPopupWindow : Window
         _border.MaxWidth = Math.Max(250, settings.PopupMaxWidthPx);
         _root.MaxWidth = Math.Max(250, settings.PopupMaxWidthPx);
         var scale = Math.Clamp(settings.PopupFontScale, .5, 1.5);
-        _headword.FontSize = 23 * scale; _reading.FontSize = 15 * scale; _pitchDiagram.FontSize = 13 * scale;
+        _headword.FontSize = 23 * scale; _reading.FontSize = 15 * scale;
         _meta.FontSize = 12 * scale; _meaning.FontSize = 14 * scale; _conjugation.FontSize = 12 * scale; _deck.FontSize = 12 * scale; _state.FontSize = 12 * scale;
 
-        _headword.Text = string.IsNullOrWhiteSpace(word.Spelling) ? token.Surface : word.Spelling;
+        var spelling = string.IsNullOrWhiteSpace(word.Spelling) ? token.Surface : word.Spelling;
+        _headword.Text = spelling;
         _headwordButton.IsEnabled = !settings.PopupDisableHeadwordLink;
-        _reading.Text = settings.PopupFurigana && !string.IsNullOrWhiteSpace(word.Reading) && word.Reading != _headword.Text ? word.Reading : "";
+        PopulateFurigana(spelling, word.Reading ?? "", settings.PopupFurigana, scale);
+
+        var pitchAccents = ReadPitchAccents(word.PitchAccents).Distinct().ToList();
+        var hasPitchDiagrams = PopulatePitchDiagrams(word.Reading ?? "", pitchAccents, settings, scale);
 
         var meta = new List<string>();
         if (settings.PopupShowFrequency && word.FrequencyRank is not null) meta.Add("Frequency #" + word.FrequencyRank.Value);
         var pos = FlattenStrings(word.PartsOfSpeech);
         if (pos.Count > 0) meta.Add(string.Join(", ", pos.Distinct()));
-        var pitch = FlattenStrings(word.PitchAccents);
-        if (settings.PopupShowPitch && pitch.Count > 0) meta.Add("Pitch: " + string.Join(", ", pitch.Distinct()));
+        // Match JitenMPV: when graphical diagrams are available they replace the numeric fallback.
+        if (settings.PopupShowPitch && !hasPitchDiagrams && pitchAccents.Count > 0)
+            meta.Add("Pitch: " + string.Join(", ", pitchAccents));
         _meta.Text = string.Join("  |  ", meta);
-        _pitchDiagram.Text = settings.PopupPitchDiagram ? MakePitchDiagram(word) : "";
 
-        _meaning.Text = string.Join("\n", FlattenStrings(word.MeaningsChunks).Distinct().Take(Math.Clamp(settings.PopupMaxMeanings, 1, 20)));
+        var meanings = ReadMeaningEntries(word.MeaningsChunks)
+            .Take(Math.Clamp(settings.PopupMaxMeanings, 1, 20))
+            .Select((meaning, index) => $"{index + 1}. {meaning}");
+        _meaning.Text = string.Join("\n", meanings);
         var conj = token.Token is null ? [] : FlattenStrings(token.Token.Conjugations);
         _conjugation.Text = settings.PopupShowConjugation && conj.Count > 0 ? "Conjugation: " + string.Join(" -> ", conj.Distinct()) : "";
         _deck.Text = "";
@@ -241,10 +251,123 @@ public sealed partial class DictionaryPopupWindow : Window
         0 => "New", 1 => "Young", 2 => "Mature", 3 => "Blacklisted", 4 => "Due", 5 => "Mastered", 6 => "Redundant", 7 => "Suspended", _ => "Unknown"
     };
 
-    private static string MakePitchDiagram(JitenWord word)
+    private void PopulateFurigana(string spelling, string reading, bool enabled, double scale)
     {
-        var values = FlattenStrings(word.PitchAccents);
-        return values.Count == 0 ? "" : "Pitch diagram: " + string.Join(" · ", values.Take(4));
+        _furiganaPanel.Children.Clear();
+        _furiganaPanel.IsVisible = false;
+        _headword.IsVisible = true;
+        _reading.Text = "";
+
+        if (!enabled || string.IsNullOrWhiteSpace(reading)) return;
+
+        var segments = FuriganaParser.ForSpelling(spelling, reading);
+        if (segments is null)
+        {
+            var plainReading = FuriganaParser.ToKana(reading);
+            _reading.Text = !string.IsNullOrWhiteSpace(plainReading) && plainReading != spelling ? plainReading : "";
+            return;
+        }
+
+        foreach (var segment in segments)
+        {
+            // Keep an ideographic-space placeholder over unannotated runs (e.g. okurigana).
+            // This keeps every base segment on the same baseline while still using Japanese font metrics.
+            var ruby = new TextBlock
+            {
+                Text = segment.Ruby.Length > 0 ? segment.Ruby : "　",
+                FontSize = 11.5 * scale,
+                Foreground = new SolidColorBrush(Color.Parse("#A1A1AA")),
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                Margin = new Thickness(0, 0, 0, -2 * scale)
+            };
+            var baseText = new TextBlock
+            {
+                Text = segment.Text,
+                FontSize = 23 * scale,
+                FontWeight = FontWeight.SemiBold,
+                Foreground = Brushes.White,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+            };
+            _furiganaPanel.Children.Add(new StackPanel { Children = { ruby, baseText } });
+        }
+
+        _headword.IsVisible = false;
+        _furiganaPanel.IsVisible = true;
+    }
+
+    private bool PopulatePitchDiagrams(string reading, IReadOnlyList<int> accents, AppSettings settings, double scale)
+    {
+        _pitchDiagramPanel.Children.Clear();
+        _pitchDiagramPanel.IsVisible = false;
+        if (!settings.PopupShowPitch || !settings.PopupPitchDiagram || accents.Count == 0 || string.IsNullOrWhiteSpace(reading))
+            return false;
+
+        foreach (var accent in accents.Take(4))
+        {
+            if (PitchAccent.BuildDiagram(reading, accent) is not { } diagram) continue;
+            var pitchColor = settings.PitchStyles.TryGetValue(diagram.Class.ToString(), out var configuredColor)
+                ? configuredColor
+                : PitchAccent.DefaultColor(diagram.Class);
+            _pitchDiagramPanel.Children.Add(new PitchDiagramControl
+            {
+                Diagram = diagram,
+                AccentColor = pitchColor,
+                ScaleFactor = scale,
+                Margin = new Thickness(0, 0, 6 * scale, 0)
+            });
+        }
+
+        _pitchDiagramPanel.IsVisible = _pitchDiagramPanel.Children.Count > 0;
+        return _pitchDiagramPanel.IsVisible;
+    }
+
+    private static List<int> ReadPitchAccents(JsonElement element)
+    {
+        var result = new List<int>();
+        CollectPitchAccents(element, result);
+        return result.Where(x => x >= 0).ToList();
+    }
+
+    private static void CollectPitchAccents(JsonElement element, List<int> result)
+    {
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.Number:
+                if (element.TryGetInt32(out var value)) result.Add(value);
+                break;
+            case JsonValueKind.String:
+                if (int.TryParse(element.GetString(), out var parsed)) result.Add(parsed);
+                break;
+            case JsonValueKind.Array:
+                foreach (var item in element.EnumerateArray()) CollectPitchAccents(item, result);
+                break;
+            case JsonValueKind.Object:
+                foreach (var property in element.EnumerateObject())
+                    if (property.Name.Contains("accent", StringComparison.OrdinalIgnoreCase)
+                        || property.NameEquals("value")
+                        || property.NameEquals("pitch"))
+                        CollectPitchAccents(property.Value, result);
+                break;
+        }
+    }
+
+    private static List<string> ReadMeaningEntries(JsonElement element)
+    {
+        var entries = new List<string>();
+        if (element.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var chunk in element.EnumerateArray())
+            {
+                var parts = FlattenStrings(chunk).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct().ToList();
+                if (parts.Count > 0) entries.Add(string.Join("; ", parts));
+            }
+        }
+        else
+        {
+            var parts = FlattenStrings(element).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct().ToList();
+            if (parts.Count > 0) entries.Add(string.Join("; ", parts));
+        }
+        return entries;
     }
 
     private static List<string> FlattenStrings(JsonElement element)

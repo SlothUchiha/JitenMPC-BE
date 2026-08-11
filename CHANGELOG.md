@@ -1,3 +1,8 @@
+# v0.5.1
+- Fixed dictionary furigana rendering: Jiten readings such as `一[いち]番[ばん]` are now parsed into ruby text above the corresponding spelling instead of displaying the bracket notation literally.
+- Added real graphical pitch-accent diagrams using the word reading and Jiten accent positions; numeric pitch values remain only as a fallback when a diagram cannot be produced or diagrams are disabled.
+- Dictionary meaning chunks are now kept as separate entries and numbered `1.`, `2.`, `3.`, etc. instead of being flattened into an unnumbered list.
+
 # v0.5.0
 - Fixed JitenMPC-BE remaining alive invisibly after the main/settings window was closed while overlay windows were still open.
 - The main/settings window now owns the desktop application lifetime: the dedicated **Close Settings** button may still hide it during playback, but closing it with the window X exits JitenMPC-BE completely.

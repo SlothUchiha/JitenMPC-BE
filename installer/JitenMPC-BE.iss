@@ -1,6 +1,6 @@
 #define AppName "JitenMPC-BE"
 #ifndef AppVersion
-  #define AppVersion "0.5.0"
+  #define AppVersion "0.5.1"
 #endif
 #define AppPublisher "SlothUchiha"
 #define AppURL "https://github.com/SlothUchiha/JitenMPC-BE"

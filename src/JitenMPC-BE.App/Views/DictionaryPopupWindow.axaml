@@ -26,10 +26,13 @@
   <Border x:Name="PopupBorder" Background="#C71A1A1A" BorderBrush="#3F3F46" BorderThickness="1" CornerRadius="8" Padding="12">
     <StackPanel x:Name="RootStack" Spacing="5" MaxWidth="550">
       <Button x:Name="HeadwordButton" Background="Transparent" BorderThickness="0" Padding="0" HorizontalAlignment="Left">
-        <TextBlock x:Name="HeadwordText" FontSize="23" FontWeight="SemiBold" Foreground="White" TextWrapping="Wrap" />
+        <Panel>
+          <TextBlock x:Name="HeadwordText" FontSize="23" FontWeight="SemiBold" Foreground="White" TextWrapping="Wrap" />
+          <StackPanel x:Name="FuriganaPanel" Orientation="Horizontal" IsVisible="False" />
+        </Panel>
       </Button>
       <TextBlock x:Name="ReadingText" FontSize="15" Foreground="#D4D4D8" TextWrapping="Wrap" />
-      <TextBlock x:Name="PitchDiagramText" FontSize="13" Foreground="#C4B5FD" TextWrapping="Wrap" />
+      <WrapPanel x:Name="PitchDiagramPanel" ItemSpacing="4" LineSpacing="2" />
       <TextBlock x:Name="MetaText" FontSize="12" Foreground="#A1A1AA" TextWrapping="Wrap" />
       <TextBlock x:Name="MeaningText" FontSize="14" Foreground="#F4F4F5" TextWrapping="Wrap" />
       <TextBlock x:Name="ConjugationText" FontSize="12" Foreground="#C4B5FD" TextWrapping="Wrap" />
