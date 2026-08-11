@@ -1,3 +1,13 @@
+# v0.4.0-preview.3
+
+- Wired update checks to `SlothUchiha/JitenMPC-BE` and migrate older blank repository settings automatically.
+- Fixed daily update-check bookkeeping so a successful up-to-date check is remembered for 24 hours.
+- Added semantic prerelease comparison and release-list checking so preview builds can detect newer previews while stable builds ignore prereleases.
+- Added normal per-user Windows installation through Inno Setup using a permanent AppId, Start Menu registration and Windows uninstall support.
+- Added real in-app updating: JitenMPC-BE downloads the matching GitHub Release installer, starts it in silent upgrade mode, exits cleanly, and is relaunched by the installer.
+- GitHub Actions now builds the Inno installer and automatically attaches it when a GitHub Release is published.
+- Reworked the README around end-user requirements, installation and updating.
+
 # v0.4.0-preview.2
 
 - Added configurable **Subtitle earlier** and **Subtitle later** global hotkeys under Keybinds → Subtitle Navigation. Defaults are `Ctrl+Alt+Left` and `Ctrl+Alt+Right`.

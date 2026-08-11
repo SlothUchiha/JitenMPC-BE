@@ -1,7 +1,9 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
@@ -87,7 +89,20 @@ public sealed partial class MainWindow : Window
         F<Button>("TestApiButton").Click += async (_, _) => { PullSettings(); _runtime.SaveSettingsQuietly(); var ok = await _runtime.TestApiAsync(); F<TextBlock>("ApiStatusText").Text = ok ? "Connected" : "Connection failed"; if (ok) { await _runtime.LoadStudyDecksAsync(); await _runtime.RefreshJitenPlusStatusAsync(); } };
         F<Button>("GetApiKeyButton").Click += (_, _) => Process.Start(new ProcessStartInfo("https://jiten.moe/settings") { UseShellExecute = true });
         F<Button>("CheckUpdatesButton").Click += async (_, _) => { PullSettings(); await _runtime.CheckUpdatesAsync(); };
-        F<Button>("InstallUpdateButton").Click += async (_, _) => await _runtime.InstallPendingUpdateAsync();
+        F<Button>("InstallUpdateButton").Click += async (sender, _) =>
+        {
+            var button = (Button)sender!;
+            button.IsEnabled = false;
+            PullSettings();
+            _runtime.SaveSettingsQuietly();
+            var installerStarted = await _runtime.InstallPendingUpdateAsync();
+            if (installerStarted && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.Shutdown();
+                return;
+            }
+            button.IsEnabled = true;
+        };
 
         F<Button>("BrowseMpcButton").Click += async (_, _) => await BrowseIntoAsync(F<TextBox>("MpcPathBox"), "Choose MPC-BE", ["*.exe"]);
         F<Button>("BrowseFfmpegButton").Click += async (_, _) => await BrowseIntoAsync(F<TextBox>("FfmpegPathBox"), "Choose ffmpeg", ["ffmpeg.exe", "*.exe"]);
@@ -479,7 +494,17 @@ public sealed partial class MainWindow : Window
 
     private void UpdateConnection()=>_version.Text="Connected version: "+(_runtime.Mpc.IsConnected&&!string.IsNullOrWhiteSpace(_runtime.Mpc.Version)?_runtime.Mpc.Version:"Not connected");
     private void UpdateMedia(){_media.Text=string.IsNullOrWhiteSpace(_runtime.Mpc.MediaPath)?"(none)":_runtime.Mpc.MediaPath;_subtitle.Text=string.IsNullOrWhiteSpace(_runtime.SubtitlePath)?"(none)":_runtime.SubtitlePath;}
-    private void UpdateUpdateUi(UpdateInfo? info){F<Button>("InstallUpdateButton").IsVisible=info is not null;_updateStatus.Text=info is null?(string.IsNullOrWhiteSpace(_runtime.Settings.UpdateRepository)?"Update support is ready; the official repository will be set for releases.":"No update available."):$"{info.Name} is available.";}
+    private void UpdateUpdateUi(UpdateInfo? info)
+    {
+        var button = F<Button>("InstallUpdateButton");
+        button.IsVisible = info is not null;
+        button.Content = info?.CanInstall == true ? "Install update" : "View release";
+        _updateStatus.Text = info is null
+            ? "No update available."
+            : info.CanInstall
+                ? $"{info.Name} is available."
+                : $"{info.Name} is available, but its installer asset is not available yet.";
+    }
     public void SetStatus(string text)=>_status.Text=text;
 
     private async Task BrowseIntoAsync(TextBox target,string title,IReadOnlyList<string> patterns){var files=await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions{Title=title,AllowMultiple=false,FileTypeFilter=[new FilePickerFileType(title){Patterns=patterns}]});if(files.Count>0)target.Text=files[0].Path.LocalPath;}

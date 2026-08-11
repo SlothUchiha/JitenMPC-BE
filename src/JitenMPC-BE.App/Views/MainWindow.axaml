@@ -164,7 +164,7 @@
             <StackPanel Spacing="8">
               <TextBlock Text="UPDATES" Classes="section-header"/>
               <CheckBox x:Name="UpdateCheckToggle" Content="Check for new versions"/>
-              <TextBlock Text="Check daily for new releases. Nothing is downloaded until you press Install update." Classes="hint"/>
+              <TextBlock Text="Check daily for new releases. Press Install update to download and run the release installer." Classes="hint"/>
               <StackPanel Orientation="Horizontal" Spacing="10">
                 <Button x:Name="CheckUpdatesButton" Content="Check now" Classes="secondary"/>
                 <Button x:Name="InstallUpdateButton" Content="Install update" Classes="accent" IsVisible="False"/>

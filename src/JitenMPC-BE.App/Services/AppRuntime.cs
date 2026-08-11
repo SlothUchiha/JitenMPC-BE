@@ -89,6 +89,9 @@ public sealed class AppRuntime : IDisposable
         _mpc = new MpcBeController(_log);
         _updates = new UpdateService(_log);
         _miningMedia = new MiningMediaService(_log);
+        // Older previews persisted an empty repository value; migrate them automatically.
+        if (string.IsNullOrWhiteSpace(Settings.UpdateRepository))
+            Settings.UpdateRepository = UpdateService.DefaultRepository;
         _readerActive = Settings.PluginAutostart;
 
         var mpc = _tools.FindMpc(Settings.MpcPath);
@@ -197,26 +200,52 @@ public sealed class AppRuntime : IDisposable
 
     public async Task<UpdateInfo?> CheckUpdatesAsync(bool userInitiated = true)
     {
-        if (string.IsNullOrWhiteSpace(Settings.UpdateRepository))
+        if (userInitiated) Status("Checking for updates...");
+        var assembly = Assembly.GetExecutingAssembly();
+        var current = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+            ?? assembly.GetName().Version?.ToString()
+            ?? "0.0.0";
+        var result = await _updates.CheckAsync(Settings, current);
+        SaveSettingsQuietly();
+
+        if (!result.Succeeded)
         {
-            if (userInitiated) Status("Update checker is ready, but the official JitenMPC-BE GitHub repository has not been configured yet.");
+            if (userInitiated) Status("Update check failed: " + result.Error);
             return null;
         }
-        if (userInitiated) Status("Checking for updates...");
-        var current = Assembly.GetExecutingAssembly().GetName().Version ?? new Version(0, 3, 0);
-        _pendingUpdate = await _updates.CheckAsync(Settings, current);
-        SaveSettingsQuietly();
+
+        _pendingUpdate = result.Update;
         UpdateInfoChanged?.Invoke(_pendingUpdate);
         if (userInitiated) Status(_pendingUpdate is null ? "JitenMPC-BE is up to date." : $"Update available: {_pendingUpdate.Name}");
         return _pendingUpdate;
     }
 
-    public async Task InstallPendingUpdateAsync()
+    public async Task<bool> InstallPendingUpdateAsync()
     {
-        if (_pendingUpdate is null) return;
-        Status("Downloading update...");
-        await _updates.InstallAsync(_pendingUpdate, DataDirectory);
-        Status("Update installer launched. Close JitenMPC-BE when prompted.");
+        if (_pendingUpdate is null) return false;
+
+        try
+        {
+            if (!_pendingUpdate.CanInstall)
+            {
+                _updates.OpenRelease(_pendingUpdate);
+                Status("This release has no installer asset yet; opened the GitHub release page instead.");
+                return false;
+            }
+
+            Status($"Downloading {_pendingUpdate.Name}...");
+            var installerPath = await _updates.DownloadInstallerAsync(_pendingUpdate);
+            SaveSettingsQuietly();
+            Status("Starting update installer...");
+            _updates.LaunchInstaller(installerPath);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _log.Write("Update install failed: " + ex.Message);
+            Status("Update install failed: " + ex.Message);
+            return false;
+        }
     }
 
     public bool ImportJitenReaderTheme(string code, out string status)

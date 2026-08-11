@@ -44,7 +44,7 @@ public sealed class AppSettings
     [JsonPropertyName("api_key")] public string ApiKey { get; set; } = "";
     [JsonPropertyName("api_timeout_seconds")] public int ApiTimeoutSeconds { get; set; } = 30;
     [JsonPropertyName("update_check_enabled")] public bool UpdateCheckEnabled { get; set; } = true;
-    [JsonPropertyName("update_repository")] public string UpdateRepository { get; set; } = "";
+    [JsonPropertyName("update_repository")] public string UpdateRepository { get; set; } = "SlothUchiha/JitenMPC-BE";
     [JsonPropertyName("last_update_check_utc")] public DateTime? LastUpdateCheckUtc { get; set; }
 
     // Appearance.

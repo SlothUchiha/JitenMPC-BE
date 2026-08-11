@@ -1,40 +1,39 @@
-# JitenMPC-BE Avalonia 0.4.0-preview.2
+# JitenMPC-BE
 
-## Build and run
+JitenMPC-BE brings JitenMPV-style Japanese subtitle parsing, dictionary popups, reviews, and mining to **MPC-BE** while leaving MPC-BE responsible for normal video and audio playback.
 
-This source package does not contain a precompiled executable. On Windows, double-click:
+This is an unofficial project based on JitenMPV. See `THIRD-PARTY-NOTICES.md` for attribution.
 
-**`Build-and-Run.cmd`**
+## Requirements
 
-The script will:
+- Windows 10 or 11, 64-bit
+- [MPC-BE](https://github.com/Aleksoid1978/MPC-BE)
+- A [Jiten](https://jiten.moe/) account and API key
+- `ffmpeg` and `ffprobe` for embedded subtitle extraction and media mining
 
-1. use a suitable installed .NET 10 SDK if present;
-2. otherwise reuse a local SDK from another JitenMPC-BE Avalonia preview when possible;
-3. otherwise install .NET SDK 10.0.302 locally under `.dotnet` without admin rights or a system PATH change;
-4. restore Avalonia NuGet packages;
-5. publish a self-contained Windows x64 single-file build to `publish`;
-6. launch `publish\JitenMPC-BE.exe`.
+The release build is self-contained; .NET does not need to be installed separately.
 
-`Build-Release.cmd` performs the same publish without launching the application.
+## Install
 
-Settings and logs are stored under:
+1. Download `JitenMPC-BE-Setup-vX.X.X.exe` from the latest GitHub Release.
+2. Run the installer. JitenMPC-BE will be added to the Start Menu and Windows Installed Apps.
+3. Open JitenMPC-BE and set the MPC-BE path if it was not detected automatically.
+4. Enter your Jiten API key and use **Test connection**.
+5. Make sure `ffmpeg` and `ffprobe` are detected, or set their paths manually.
+6. Use **Open MPC-BE** from JitenMPC-BE, then open your video normally in MPC-BE.
 
-`%LOCALAPPDATA%\JitenMPC-BE`
+JitenMPC-BE must launch MPC-BE so it can establish MPC-BE's `/slave` connection.
 
-## Project layout
+Settings and logs are stored in `%LOCALAPPDATA%\JitenMPC-BE`.
 
-- `src/JitenMPC-BE.App/Views/` — settings, subtitle overlay, popup and mining dialogs
-- `src/JitenMPC-BE.App/Controls/OutlinedTokenControl.cs` — vector subtitle/token renderer
-- `src/JitenMPC-BE.App/Services/AppRuntime.cs` — application orchestration and mining workflow
-- `src/JitenMPC-BE.App/Services/MiningMediaService.cs` — ffmpeg screenshot/clip/audio capture
-- `src/JitenMPC-BE.App/Services/MpcBeController.cs` — MPC-BE `/slave` controller
-- `src/JitenMPC-BE.App/Services/SubtitleTrackService.cs` — ffprobe discovery + ffmpeg extraction
-- `src/JitenMPC-BE.App/Services/JitenApiClient.cs` — parsing, state, review, deck and media APIs
-- `src/JitenMPC-BE.App/Services/KeybindService.cs` — global reader/keybind handling
-- `src/JitenMPC-BE.App/Native/` — Win32 controller/geometry/input helpers
+## Updating
 
-## Third-party projects
+JitenMPC-BE checks this repository for new releases once per day when update checking is enabled. You can also use **Check now** under General → Updates. When an installer is available, **Install update** downloads it, upgrades the existing installation, and relaunches JitenMPC-BE.
+
+## Building from source
+
+Run `Build-and-Run.cmd` to build and launch, or `Build-Release.cmd` to create the self-contained Windows build. `installer/JitenMPC-BE.iss` builds the normal Windows installer with Inno Setup.
+
+## License and attribution
 
 See `THIRD-PARTY-NOTICES.md` and `LICENSE-JitenMPV.txt`.
-
-JitenMPC-BE is an unofficial companion project and is not an official JitenMPV, Jiten, MPC-BE, or Avalonia release.

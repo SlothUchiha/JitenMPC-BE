@@ -8,7 +8,7 @@
   "api_key": "",
   "api_timeout_seconds": 30,
   "update_check_enabled": true,
-  "update_repository": "",
+  "update_repository": "SlothUchiha/JitenMPC-BE",
   "font_family": "Yu Gothic UI",
   "font_size": 48,
   "border_size": 3,
