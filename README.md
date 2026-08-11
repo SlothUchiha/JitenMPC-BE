@@ -1,8 +1,8 @@
 # JitenMPC-BE
 
-JitenMPC-BE brings JitenMPV-style Japanese subtitle parsing, dictionary popups, reviews, and mining to **MPC-BE** while leaving MPC-BE responsible for normal video and audio playback.
+JitenMPC-BE brings JitenMPV-style Japanese subtitle parsing, dictionary popups, reviews, and mining to MPC-BE while leaving MPC-BE responsible for normal video and audio playback.
 
-This is an unofficial project based on JitenMPV. See `THIRD-PARTY-NOTICES.md` for attribution.
+This is an unofficial project based on JitenMPV. 
 
 ## Requirements
 
@@ -11,14 +11,12 @@ This is an unofficial project based on JitenMPV. See `THIRD-PARTY-NOTICES.md` fo
 - A [Jiten](https://jiten.moe/) account and API key
 - `ffmpeg` and `ffprobe` for embedded subtitle extraction and media mining
 
-The release build is self-contained; .NET does not need to be installed separately.
-
 ## Install
 
 1. Download `JitenMPC-BE-Setup-vX.X.X.exe` from the latest GitHub Release.
-2. Run the installer. JitenMPC-BE will be added to the Start Menu and Windows Installed Apps.
+2. Run the installer. 
 3. Open JitenMPC-BE and set the MPC-BE path if it was not detected automatically.
-4. Enter your Jiten API key and use **Test connection**.
+4. Enter your Jiten API key.
 5. Make sure `ffmpeg` and `ffprobe` are detected, or set their paths manually.
 6. Use **Open MPC-BE** from JitenMPC-BE, then open your video normally in MPC-BE.
 
