@@ -8,3 +8,4 @@ JitenMPC-BE.log
 *.user
 *.suo
 .vs/
+installer-output/
