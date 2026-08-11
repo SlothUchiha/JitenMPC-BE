@@ -17,6 +17,8 @@ public sealed class MpcBeController : IDisposable
     private readonly FileLogger _log;
     private string _mpcExecutable = "";
     private string _pendingMedia = "";
+    private Process? _launchedProcess;
+    private bool _disposed;
 
     public IntPtr Hwnd { get; private set; }
     public string Version { get; private set; } = "";
@@ -28,6 +30,7 @@ public sealed class MpcBeController : IDisposable
 
     public event Action? Connected;
     public event Action? Disconnected;
+    public event Action? LaunchedProcessExited;
     public event Action<string>? VersionChanged;
     public event Action<string>? MediaPathChanged;
     public event Action<double>? PositionChanged;
@@ -50,7 +53,25 @@ public sealed class MpcBeController : IDisposable
         psi.ArgumentList.Add("/slave");
         psi.ArgumentList.Add(_host.Hwnd.ToInt64().ToString(CultureInfo.InvariantCulture));
         _log.Write($"Launching {executable} /slave {_host.Hwnd.ToInt64()}");
-        Process.Start(psi);
+        ReleaseLaunchedProcess();
+        var process = Process.Start(psi) ?? throw new InvalidOperationException("Windows could not start MPC-BE.");
+        _launchedProcess = process;
+        process.EnableRaisingEvents = true;
+        process.Exited += OnLaunchedProcessExited;
+    }
+
+    private void OnLaunchedProcessExited(object? sender, EventArgs e)
+    {
+        _log.Write("Launched MPC-BE process exited.");
+        LaunchedProcessExited?.Invoke();
+    }
+
+    private void ReleaseLaunchedProcess()
+    {
+        if (_launchedProcess is null) return;
+        try { _launchedProcess.Exited -= OnLaunchedProcessExited; } catch { }
+        try { _launchedProcess.Dispose(); } catch { }
+        _launchedProcess = null;
     }
 
     public bool Send(uint command, string data = "") => IsConnected && _host.SendCommand(Hwnd, command, data);
@@ -207,7 +228,10 @@ public sealed class MpcBeController : IDisposable
 
     public void Dispose()
     {
+        if (_disposed) return;
+        _disposed = true;
         _host.MessageReceived -= OnMessage;
+        ReleaseLaunchedProcess();
         _host.Dispose();
     }
 }

@@ -60,6 +60,9 @@ public sealed class AppRuntime : IDisposable
     private DateTime _lastWordClickAt = DateTime.MinValue;
     private string _lastWordClickKey = "";
     private bool _miningBusy;
+    private bool _hadMpcConnection;
+    private bool _applicationExitRequested;
+    private bool _disposed;
 
     public AppSettings Settings => _settingsService.Current;
     public MpcBeController Mpc => _mpc;
@@ -78,6 +81,7 @@ public sealed class AppRuntime : IDisposable
     public event Action<UpdateInfo?>? UpdateInfoChanged;
     public event Action<IReadOnlyList<StudyDeckInfo>>? StudyDecksChanged;
     public event Action<JitenPlusInfo>? JitenPlusChanged;
+    public event Action? ApplicationExitRequested;
 
     public AppRuntime()
     {
@@ -104,6 +108,7 @@ public sealed class AppRuntime : IDisposable
         _popup.CommandRequested += command => _ = HandlePopupCommandAsync(command);
         _mpc.Connected += OnConnected;
         _mpc.Disconnected += OnDisconnected;
+        _mpc.LaunchedProcessExited += OnMpcProcessExited;
         _mpc.VersionChanged += _ => ConnectionInfoChanged?.Invoke();
         _mpc.MediaPathChanged += path => { MediaInfoChanged?.Invoke(); _ = LoadForMediaAsync(path); };
 
@@ -123,7 +128,7 @@ public sealed class AppRuntime : IDisposable
             ExecuteMouseAction,
             () => WindowUtil.GetPlayerHostWindow(_mpc.Hwnd),
             _log);
-        Status("Ready. JitenMPV feature parity preview with mining.");
+        Status("Ready.");
         if (Settings.UpdateCheckEnabled && (Settings.LastUpdateCheckUtc is null || DateTime.UtcNow - Settings.LastUpdateCheckUtc > TimeSpan.FromDays(1)))
             _ = CheckUpdatesAsync(false);
     }
@@ -371,6 +376,7 @@ public sealed class AppRuntime : IDisposable
 
     private void OnConnected()
     {
+        _hadMpcConnection = true;
         _overlay.SetMpcOwner(_mpc.Hwnd); _popup.SetMpcOwner(_mpc.Hwnd);
         ConnectionInfoChanged?.Invoke(); Status("MPC-BE connected.");
     }
@@ -381,10 +387,48 @@ public sealed class AppRuntime : IDisposable
         _currentCue = null; _currentCueKey = ""; _cueRenderPending = false; _cues.Clear(); _subtitlePath = ""; _embedded = []; _subtitleOffsetMs = 0;
         SubtitleStreams = [SubtitleStreamInfo.Auto]; SubtitleTracksChanged?.Invoke(SubtitleStreams);
         HidePlayerOverlays(); ConnectionInfoChanged?.Invoke(); MediaInfoChanged?.Invoke(); Status("MPC-BE disconnected.");
+        if (_hadMpcConnection) RequestApplicationExit("MPC-BE disconnected; closing JitenMPC-BE.");
+    }
+
+    private void OnMpcProcessExited()
+    {
+        // Process.Exited is raised off the UI thread. Give the slave connection a brief chance
+        // to finish establishing in case MPC-BE delegated startup internally, then only shut
+        // down if no live slave window exists.
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(400);
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (!_disposed && !_mpc.IsConnected)
+                    RequestApplicationExit("The MPC-BE slave process exited; closing JitenMPC-BE.");
+            });
+        });
+    }
+
+    private void RequestApplicationExit(string reason)
+    {
+        if (_disposed || _applicationExitRequested) return;
+        _applicationExitRequested = true;
+        _log.Write(reason);
+        // Defer the lifetime shutdown until the current MPC message/timer callback has returned;
+        // this avoids disposing the hidden slave-message window from inside its own handler.
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (!_disposed) ApplicationExitRequested?.Invoke();
+        }, DispatcherPriority.Background);
     }
 
     private void Tick()
     {
+        // MPC-BE normally sends CMD_DISCONNECT, but also catch abrupt/window-level exits so a
+        // hidden settings window can never leave an orphaned JitenMPC-BE process behind.
+        if (_hadMpcConnection && !_mpc.IsConnected)
+        {
+            RequestApplicationExit("The MPC-BE slave window disappeared; closing JitenMPC-BE.");
+            return;
+        }
+
         if (_keys.Pressed(Settings.PluginStartKey))
         {
             _readerActive = !_readerActive;
@@ -409,13 +453,11 @@ public sealed class AppRuntime : IDisposable
                 _popup.EnsureAboveOwner(_mpc.Hwnd);
             }
         }
-
         if (_readerActive && !_overlay.IsVisible) _overlay.Show();
         var inZone = MouseInInteractionZone(now);
         _overlay.UpdateTransientUi(Settings, inZone);
         var leftPressed = _keys.MouseLeftPressed();
         if (!_readerActive) return;
-
         var cue = SubtitleParser.CueAt(_cues, SubtitleClockSeconds);
         var key = cue is null ? "" : $"{cue.Start:F3}-{cue.End:F3}|{cue.Text}";
         if (key != _currentCueKey)
@@ -919,7 +961,12 @@ public sealed class AppRuntime : IDisposable
 
     public void Dispose()
     {
+        if (_disposed) return;
+        _disposed = true;
         _timer.Stop(); _mediaLoadCts?.Cancel(); _preparseCts?.Cancel();
+        _mpc.Connected -= OnConnected;
+        _mpc.Disconnected -= OnDisconnected;
+        _mpc.LaunchedProcessExited -= OnMpcProcessExited;
         HidePlayerOverlays(); _mouseClickInterceptor?.Dispose(); _overlay.Close(); _popup.Close(); _mpc.Dispose();
     }
 }

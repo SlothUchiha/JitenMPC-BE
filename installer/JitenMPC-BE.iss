@@ -1,10 +1,11 @@
 #define AppName "JitenMPC-BE"
 #ifndef AppVersion
-  #define AppVersion "0.4.0-preview.3"
+  #define AppVersion "0.5.0"
 #endif
 #define AppPublisher "SlothUchiha"
 #define AppURL "https://github.com/SlothUchiha/JitenMPC-BE"
 #define AppExeName "JitenMPC-BE.exe"
+
 [Setup]
 AppId={{52307245-8D26-458A-B03D-3D37298A1DC1}
 AppName={#AppName}
@@ -29,6 +30,7 @@ SolidCompression=yes
 WizardStyle=modern
 CloseApplications=yes
 RestartApplications=no
+
 [Files]
 Source: "..\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 

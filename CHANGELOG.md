@@ -1,3 +1,10 @@
+# v0.5.0
+- Fixed JitenMPC-BE remaining alive invisibly after the main/settings window was closed while overlay windows were still open.
+- The main/settings window now owns the desktop application lifetime: the dedicated **Close Settings** button may still hide it during playback, but closing it with the window X exits JitenMPC-BE completely.
+- JitenMPC-BE now exits automatically when an established MPC-BE slave session disconnects or its player window disappears, including when the settings window is hidden.
+- Added launched MPC-BE process-exit monitoring to cover abrupt exits and failed/aborted slave startups without leaving an orphaned JitenMPC-BE process.
+- Made runtime and MPC controller disposal idempotent so overlapping shutdown paths cannot double-dispose overlay/controller resources.
+
 # v0.4.0-preview.3
 
 - Wired update checks to `SlothUchiha/JitenMPC-BE` and migrate older blank repository settings automatically.
