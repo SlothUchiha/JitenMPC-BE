@@ -1,3 +1,7 @@
+# v0.5.2
+- Fixed popup vocabulary-state actions for Jiten's current API (`neverForget-add`, `blacklist-add`, `suspend-add`, and `forget-add`), including state rotation.
+- Added size-based log rotation: `JitenMPC-BE.log` rolls at 5 MB and keeps three backups, limiting normal retained logs to roughly 20 MB total.
+
 # v0.5.1
 - Fixed dictionary furigana rendering: Jiten readings such as `一[いち]番[ばん]` are now parsed into ruby text above the corresponding spelling instead of displaying the bracket notation literally.
 - Added real graphical pitch-accent diagrams using the word reading and Jiten accent positions; numeric pitch values remain only as a fallback when a diagram cannot be produced or diagrams are disabled.

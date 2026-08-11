@@ -732,10 +732,10 @@ public sealed class AppRuntime : IDisposable
                     Process.Start(new ProcessStartInfo("https://jiten.moe/parse?text=" + query) { UseShellExecute = true });
                 }
                 return;
-            case "NeverForget": ok = await _jiten.SetVocabularyStateAsync(Settings.ApiBaseUrl, Settings.ApiKey, word.WordId, word.ReadingIndex, "never-forget", Settings.ApiTimeoutSeconds); break;
-            case "Blacklist": ok = await _jiten.SetVocabularyStateAsync(Settings.ApiBaseUrl, Settings.ApiKey, word.WordId, word.ReadingIndex, "blacklist", Settings.ApiTimeoutSeconds); break;
-            case "Suspend": ok = await _jiten.SetVocabularyStateAsync(Settings.ApiBaseUrl, Settings.ApiKey, word.WordId, word.ReadingIndex, "suspend", Settings.ApiTimeoutSeconds); break;
-            case "Forget": ok = await _jiten.SetVocabularyStateAsync(Settings.ApiBaseUrl, Settings.ApiKey, word.WordId, word.ReadingIndex, "forget", Settings.ApiTimeoutSeconds); break;
+            case "NeverForget": ok = await _jiten.SetVocabularyStateAsync(Settings.ApiBaseUrl, Settings.ApiKey, word.WordId, word.ReadingIndex, "neverForget-add", Settings.ApiTimeoutSeconds); break;
+            case "Blacklist": ok = await _jiten.SetVocabularyStateAsync(Settings.ApiBaseUrl, Settings.ApiKey, word.WordId, word.ReadingIndex, "blacklist-add", Settings.ApiTimeoutSeconds); break;
+            case "Suspend": ok = await _jiten.SetVocabularyStateAsync(Settings.ApiBaseUrl, Settings.ApiKey, word.WordId, word.ReadingIndex, "suspend-add", Settings.ApiTimeoutSeconds); break;
+            case "Forget": ok = await _jiten.SetVocabularyStateAsync(Settings.ApiBaseUrl, Settings.ApiKey, word.WordId, word.ReadingIndex, "forget-add", Settings.ApiTimeoutSeconds); break;
             case "RotateForward": ok = await RotateStateAsync(word, true); break;
             case "RotateBackward": ok = await RotateStateAsync(word, false); break;
             case "ReviewAgain" or "ReviewHard" or "ReviewGood" or "ReviewEasy":
@@ -885,17 +885,17 @@ public sealed class AppRuntime : IDisposable
     {
         // Match JitenMPV's rotation policy: RotateCycle keeps the rotation entirely among
         // the selected states; when it is off, the same ring also passes through a cleared
-        // ("forget") slot. In either mode rotation wraps in both directions.
+        // ("forget-add") slot. In either mode rotation wraps in both directions.
         var actions = new List<string>();
-        if (!Settings.RotateCycle) actions.Add("forget");
-        if (Settings.RotateCycleNeverForget) actions.Add("never-forget");
-        if (Settings.RotateCycleBlacklist) actions.Add("blacklist");
-        if (Settings.RotateCycleSuspended) actions.Add("suspend");
+        if (!Settings.RotateCycle) actions.Add("forget-add");
+        if (Settings.RotateCycleNeverForget) actions.Add("neverForget-add");
+        if (Settings.RotateCycleBlacklist) actions.Add("blacklist-add");
+        if (Settings.RotateCycleSuspended) actions.Add("suspend-add");
         if (actions.Count == (Settings.RotateCycle ? 0 : 1))
-            actions.AddRange(["never-forget", "blacklist", "suspend"]);
+            actions.AddRange(["neverForget-add", "blacklist-add", "suspend-add"]);
 
         var current = JitenApiClient.CollapseKnownState(word);
-        var currentAction = current switch { 5 => "never-forget", 3 => "blacklist", 7 => "suspend", _ => "forget" };
+        var currentAction = current switch { 5 => "neverForget-add", 3 => "blacklist-add", 7 => "suspend-add", _ => "forget-add" };
         var idx = actions.IndexOf(currentAction);
         if (idx < 0) idx = forward ? -1 : 0;
         var next = forward ? idx + 1 : idx - 1;
