@@ -1,0 +1,689 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="JitenMpcBe.Views.MainWindow"
+        Title="JitenMPC-BE Settings"
+        Width="750" Height="580" MinWidth="650" MinHeight="500"
+        Background="#09090B" WindowStartupLocation="CenterScreen"
+        RequestedThemeVariant="Dark">
+  <Window.Styles>
+    <!-- Mirrors JitenMPV's settings-window structure while keeping JitenMPC-BE's palette. -->
+    <Style Selector="ListBoxItem">
+      <Setter Property="Padding" Value="16,10"/>
+      <Setter Property="Foreground" Value="#A1A1AA"/>
+      <Setter Property="FontSize" Value="14"/>
+    </Style>
+    <Style Selector="ListBoxItem:selected">
+      <Setter Property="Foreground" Value="#FFFFFF"/>
+      <Setter Property="Background" Value="#18181B"/>
+    </Style>
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+      <Setter Property="Foreground" Value="#FFFFFF"/>
+    </Style>
+    <Style Selector="TextBlock.section-header">
+      <Setter Property="FontSize" Value="11"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Foreground" Value="#71717A"/>
+      <Setter Property="Margin" Value="0,4,0,0"/>
+    </Style>
+    <Style Selector="TextBlock.field-label">
+      <Setter Property="VerticalAlignment" Value="Center"/>
+      <Setter Property="Foreground" Value="#A1A1AA"/>
+      <Setter Property="FontSize" Value="13"/>
+    </Style>
+    <Style Selector="TextBlock.hint">
+      <Setter Property="Foreground" Value="#71717A"/>
+      <Setter Property="FontSize" Value="11"/>
+      <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    <Style Selector="Border.divider">
+      <Setter Property="Height" Value="1"/>
+      <Setter Property="Background" Value="#27272A"/>
+      <Setter Property="Margin" Value="0,4,0,4"/>
+    </Style>
+    <Style Selector="Border.feature-card">
+      <Setter Property="Background" Value="#18181B"/>
+      <Setter Property="BorderBrush" Value="#3F3F46"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="Padding" Value="16"/>
+    </Style>
+    <Style Selector="NumericUpDown.field">
+      <Setter Property="Width" Value="160"/>
+      <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+    <Style Selector="Button.accent">
+      <Setter Property="Background" Value="#C084FC"/>
+      <Setter Property="Foreground" Value="#18181B"/>
+      <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="Button.accent:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#D8B4FE"/>
+      <Setter Property="Foreground" Value="#18181B"/>
+    </Style>
+    <Style Selector="Button.accent:pressed /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#A855F7"/>
+      <Setter Property="Foreground" Value="#FFFFFF"/>
+    </Style>
+    <Style Selector="Button.secondary">
+      <Setter Property="Background" Value="#27272A"/>
+      <Setter Property="Foreground" Value="#D4D4D8"/>
+    </Style>
+    <Style Selector="Button.secondary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#3F3F46"/>
+    </Style>
+    <Style Selector="Button.link">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Foreground" Value="#71717A"/>
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="FontSize" Value="11"/>
+      <Setter Property="HorizontalContentAlignment" Value="Left"/>
+    </Style>
+    <Style Selector="Button.link:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Foreground" Value="#A1A1AA"/>
+    </Style>
+    <Style Selector="ToggleButton.align">
+      <Setter Property="Background" Value="#18181B"/>
+      <Setter Property="Foreground" Value="#D4D4D8"/>
+      <Setter Property="Margin" Value="1"/>
+    </Style>
+    <Style Selector="ToggleButton.align:checked">
+      <Setter Property="Background" Value="#C084FC"/>
+      <Setter Property="Foreground" Value="#18181B"/>
+    </Style>
+    <Style Selector="CheckBox"><Setter Property="Foreground" Value="#E4E4E7"/></Style>
+    <Style Selector="ToggleSwitch"><Setter Property="Foreground" Value="#E4E4E7"/></Style>
+    <Style Selector="Expander"><Setter Property="Foreground" Value="#E4E4E7"/></Style>
+  </Window.Styles>
+
+  <Grid RowDefinitions="*,Auto">
+    <Grid Grid.Row="0" ColumnDefinitions="180,*">
+      <Border Grid.Column="0" Background="#0F0F12" BorderBrush="#27272A" BorderThickness="0,0,1,0">
+        <ListBox x:Name="NavList" Background="Transparent" BorderThickness="0" Padding="0,8" SelectedIndex="0">
+          <ListBoxItem Content="General"/>
+          <ListBoxItem Content="Appearance"/>
+          <ListBoxItem Content="Features"/>
+          <ListBoxItem Content="Media"/>
+          <ListBoxItem Content="Popup"/>
+          <ListBoxItem Content="Keybinds"/>
+          <ListBoxItem Content="Advanced"/>
+        </ListBox>
+      </Border>
+
+      <Grid Grid.Column="1">
+        <!-- GENERAL -->
+        <ScrollViewer x:Name="GeneralPanel" VerticalScrollBarVisibility="Auto">
+          <StackPanel Margin="24,16" Spacing="16">
+            <TextBlock Text="General" FontSize="20" FontWeight="Bold" Foreground="#FFFFFF"/>
+
+            <StackPanel Spacing="4">
+              <TextBlock Text="API Key" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/>
+              <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="4">
+                <TextBox x:Name="ApiKeyBox" PasswordChar="*" Watermark="Enter your jiten.moe API key"/>
+                <Button x:Name="ShowApiKeyButton" Grid.Column="1" Content="Show" Classes="secondary"/>
+                <Button x:Name="TestApiButton" Grid.Column="2" Content="Test" Classes="secondary"/>
+              </Grid>
+              <TextBlock x:Name="ApiStatusText" FontSize="12" Foreground="#A1A1AA"/>
+              <Button x:Name="GetApiKeyButton" Content="Get your API key from jiten.moe/settings" Classes="link" HorizontalAlignment="Left"/>
+            </StackPanel>
+
+            <Border Classes="divider"/>
+
+            <StackPanel Spacing="8">
+              <TextBlock Text="MPC-BE" Classes="section-header"/>
+              <Grid ColumnDefinitions="120,*" RowDefinitions="Auto,Auto" RowSpacing="8">
+                <TextBlock Text="Executable" Classes="field-label"/>
+                <Grid Grid.Column="1" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                  <TextBox x:Name="MpcPathBox" Watermark="mpc-be64.exe"/>
+                  <Button x:Name="BrowseMpcButton" Grid.Column="1" Content="Browse" Classes="secondary"/>
+                </Grid>
+                <TextBlock Grid.Row="1" Text="Connection" Classes="field-label"/>
+                <TextBlock x:Name="MpcVersionText" Grid.Row="1" Grid.Column="1" Text="Connected version: Not connected" Foreground="#71717A" FontSize="12" VerticalAlignment="Center"/>
+              </Grid>
+            </StackPanel>
+
+            <Border Classes="divider"/>
+
+            <Border Background="#121216" BorderBrush="#27272A" BorderThickness="1" CornerRadius="6" Padding="14">
+              <StackPanel Spacing="10">
+                <TextBlock Text="ffmpeg / ffprobe" Foreground="#FAFAFA" FontSize="14" FontWeight="Medium"/>
+                <TextBlock Text="JitenMPC-BE uses ffmpeg/ffprobe for embedded subtitle discovery and extraction." Classes="hint"/>
+                <Grid ColumnDefinitions="90,*,Auto" RowDefinitions="Auto,Auto" RowSpacing="8" ColumnSpacing="8">
+                  <TextBlock Text="ffmpeg" Classes="field-label"/>
+                  <TextBox x:Name="FfmpegPathBox" Grid.Column="1" Watermark="Leave blank to detect automatically"/>
+                  <Button x:Name="BrowseFfmpegButton" Grid.Column="2" Content="Browse" Classes="secondary"/>
+                  <TextBlock Grid.Row="1" Text="ffprobe" Classes="field-label"/>
+                  <TextBox x:Name="FfprobePathBox" Grid.Row="1" Grid.Column="1" Watermark="Leave blank to detect automatically"/>
+                  <Button x:Name="BrowseFfprobeButton" Grid.Row="1" Grid.Column="2" Content="Browse" Classes="secondary"/>
+                </Grid>
+                <Button x:Name="DetectFfmpegButton" Content="Detect automatically" Classes="secondary" HorizontalAlignment="Left"/>
+              </StackPanel>
+            </Border>
+
+            <Border Classes="divider"/>
+
+            <StackPanel Spacing="8">
+              <TextBlock Text="UPDATES" Classes="section-header"/>
+              <CheckBox x:Name="UpdateCheckToggle" Content="Check for new versions"/>
+              <TextBlock Text="Check daily for new releases. Nothing is downloaded until you press Install update." Classes="hint"/>
+              <StackPanel Orientation="Horizontal" Spacing="10">
+                <Button x:Name="CheckUpdatesButton" Content="Check now" Classes="secondary"/>
+                <Button x:Name="InstallUpdateButton" Content="Install update" Classes="accent" IsVisible="False"/>
+                <TextBlock x:Name="UpdateStatusText" FontSize="12" VerticalAlignment="Center" Foreground="#A1A1AA" TextWrapping="Wrap"/>
+              </StackPanel>
+            </StackPanel>
+
+            <Border Classes="divider"/>
+
+            <Expander Header="Advanced API Settings">
+              <StackPanel Spacing="8" Margin="0,8,0,0">
+                <StackPanel Spacing="4">
+                  <TextBlock Text="API Base URL" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/>
+                  <TextBox x:Name="ApiBaseBox"/>
+                </StackPanel>
+                <StackPanel Spacing="4">
+                  <TextBlock Text="API Timeout (seconds)" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/>
+                  <NumericUpDown x:Name="ApiTimeoutBox" Minimum="5" Maximum="300" Increment="5"/>
+                </StackPanel>
+              </StackPanel>
+            </Expander>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- APPEARANCE -->
+        <ScrollViewer x:Name="AppearancePanel" IsVisible="False" VerticalScrollBarVisibility="Auto">
+          <StackPanel Margin="24,16" Spacing="16">
+            <TextBlock Text="Appearance" FontSize="20" FontWeight="Bold" Foreground="#FFFFFF"/>
+
+            <StackPanel Spacing="4">
+              <TextBlock Text="Theme" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/>
+              <ComboBox x:Name="ThemeBox" MinWidth="200" HorizontalAlignment="Left"/>
+            </StackPanel>
+
+            <Expander Header="Import from JitenReader" Padding="0">
+              <StackPanel Spacing="8" Margin="0,8,0,0">
+                <TextBlock Text="Paste a JitenReader theme share code (jtr:1...)" FontSize="12" Foreground="#71717A"/>
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                  <TextBox x:Name="ThemeImportBox" Watermark="jtr:1..."/>
+                  <Button x:Name="ThemeImportButton" Grid.Column="1" Content="Import" Classes="accent"/>
+                </Grid>
+                <TextBlock x:Name="ThemeImportStatus" FontSize="12" Foreground="#A1A1AA"/>
+              </StackPanel>
+            </Expander>
+
+            <StackPanel x:Name="CustomThemePanel" IsVisible="False" Spacing="8"/>
+
+            <Border Classes="divider"/>
+
+            <StackPanel Spacing="8">
+              <TextBlock Text="PITCH ACCENT COLOURS" Classes="section-header"/>
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <ToggleSwitch x:Name="PitchColorToggle"/>
+                <TextBlock Text="Colour words by pitch pattern" FontSize="14" VerticalAlignment="Center" Foreground="#FFFFFF"/>
+              </StackPanel>
+              <TextBlock Text="Replaces the word's knowledge-state colour. Outlines, i+1 and frequency marks are kept." FontSize="12" Foreground="#71717A" TextWrapping="Wrap"/>
+              <StackPanel x:Name="PitchOptionsPanel" Spacing="6" Margin="0,4,0,0">
+                <TextBlock Text="Show the pitch as" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/>
+                <StackPanel Orientation="Horizontal" Spacing="16">
+                  <RadioButton x:Name="PitchTextRadio" Content="Text colour" GroupName="PitchMode"/>
+                  <RadioButton x:Name="PitchUnderlineRadio" Content="Underline" GroupName="PitchMode"/>
+                </StackPanel>
+                <TextBlock Text="Text colour replaces the word's colour. Underline keeps it and draws a coloured bar underneath." FontSize="12" Foreground="#71717A" TextWrapping="Wrap" Margin="0,0,0,4"/>
+                <StackPanel x:Name="PitchUnderlineOptionsPanel" Spacing="4" Margin="0,0,0,4">
+                  <TextBlock Text="Underline thickness" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/>
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Slider x:Name="PitchUnderlineSlider" Minimum="1" Maximum="16" Width="250"/>
+                    <TextBlock x:Name="PitchUnderlineValue" VerticalAlignment="Center" Width="50" Foreground="#FFFFFF"/>
+                  </StackPanel>
+                </StackPanel>
+                <StackPanel x:Name="PitchColorPanel" Spacing="0"/>
+                <Button x:Name="ResetPitchColorsButton" Content="Reset to default colours" Classes="secondary" HorizontalAlignment="Left"/>
+              </StackPanel>
+            </StackPanel>
+
+            <Border Classes="divider"/>
+
+            <StackPanel Spacing="8">
+              <TextBlock Text="FONT" Classes="section-header"/>
+              <Grid ColumnDefinitions="80,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">
+                <TextBlock Text="Family" Classes="field-label"/>
+                <ComboBox x:Name="FontBox" Grid.Column="1" IsEditable="True" PlaceholderText="Choose or type an installed Japanese font" HorizontalAlignment="Left" Width="300" MaxDropDownHeight="320"/>
+                <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
+                  <TextBlock x:Name="FontPreviewText" Text="世界、こんにちは。" FontSize="20" Foreground="#FAFAFA"/>
+                  <TextBlock Text="Preview of the installed font. Check that the kanji look Japanese rather than Chinese." Classes="hint"/>
+                </StackPanel>
+                <TextBlock Grid.Row="2" Text="Size" Classes="field-label"/>
+                <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                  <Slider x:Name="FontSizeSlider" Minimum="24" Maximum="96" Width="300" TickFrequency="1" IsSnapToTickEnabled="True"/>
+                  <TextBlock x:Name="FontSizeValue" VerticalAlignment="Center" Width="30" Foreground="#FFFFFF"/>
+                </StackPanel>
+                <TextBlock Grid.Row="3" Text="Border" Classes="field-label"/>
+                <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                  <Slider x:Name="BorderSizeBox" Minimum="0" Maximum="10" Width="300" TickFrequency="0.5" IsSnapToTickEnabled="True"/>
+                  <TextBlock x:Name="BorderSizeValue" VerticalAlignment="Center" Width="30" Foreground="#FFFFFF"/>
+                </StackPanel>
+              </Grid>
+            </StackPanel>
+
+            <Border Classes="divider"/>
+
+            <StackPanel Spacing="8">
+              <TextBlock Text="SUBTITLE POSITION" Classes="section-header"/>
+              <TextBlock Text="Alignment" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/>
+              <UniformGrid Rows="3" Columns="3" Width="150" Height="150">
+                <ToggleButton x:Name="Align7" Content="&#x2196;" Classes="align"/>
+                <ToggleButton x:Name="Align8" Content="&#x2191;" Classes="align"/>
+                <ToggleButton x:Name="Align9" Content="&#x2197;" Classes="align"/>
+                <ToggleButton x:Name="Align4" Content="&#x2190;" Classes="align"/>
+                <ToggleButton x:Name="Align5" Content="&#x2022;" Classes="align"/>
+                <ToggleButton x:Name="Align6" Content="&#x2192;" Classes="align"/>
+                <ToggleButton x:Name="Align1" Content="&#x2199;" Classes="align"/>
+                <ToggleButton x:Name="Align2" Content="&#x2193;" Classes="align"/>
+                <ToggleButton x:Name="Align3" Content="&#x2198;" Classes="align"/>
+              </UniformGrid>
+              <Grid ColumnDefinitions="80,*" RowDefinitions="Auto,Auto" RowSpacing="8">
+                <TextBlock Text="Margin X" Classes="field-label"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                  <Slider x:Name="MarginXSlider" Minimum="0" Maximum="400" Width="300"/>
+                  <TextBlock x:Name="MarginXValue" VerticalAlignment="Center" Width="50" Foreground="#FFFFFF"/>
+                </StackPanel>
+                <TextBlock Grid.Row="1" Text="Margin Y" Classes="field-label"/>
+                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                  <Slider x:Name="MarginYSlider" Minimum="0" Maximum="400" Width="300"/>
+                  <TextBlock x:Name="MarginYValue" VerticalAlignment="Center" Width="50" Foreground="#FFFFFF"/>
+                </StackPanel>
+              </Grid>
+              <CheckBox x:Name="SingleLineCheck" Content="Join wrapped lines into one line when it fits"/>
+              <TextBlock Text="Removes line breaks placed in the subtitle file. Lines too long to fit still wrap normally." FontSize="12" Foreground="#71717A" TextWrapping="Wrap"/>
+            </StackPanel>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- FEATURES -->
+        <ScrollViewer x:Name="FeaturesPanel" IsVisible="False" VerticalScrollBarVisibility="Auto">
+          <StackPanel Margin="24,16" Spacing="16">
+            <TextBlock Text="Features" FontSize="20" FontWeight="Bold" Foreground="#FFFFFF"/>
+
+            <Border Classes="feature-card">
+              <StackPanel Spacing="8">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <ToggleSwitch x:Name="IPlusOneToggle"/>
+                  <TextBlock Text="i+1 Detection" FontSize="15" FontWeight="Medium" VerticalAlignment="Center" Foreground="#FFFFFF"/>
+                </StackPanel>
+                <TextBlock Text="Highlights sentences where you know all words except one" FontSize="12" Foreground="#71717A" Margin="0,0,0,4"/>
+                <StackPanel x:Name="IPlusOneOptionsPanel" Spacing="8" Margin="16,0,0,0">
+                  <StackPanel Spacing="4"><TextBlock Text="Min words" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/><NumericUpDown x:Name="IPlusOneMinBox" Minimum="2" Maximum="10" Increment="1"/></StackPanel>
+                  <StackPanel Spacing="4"><TextBlock Text="Below frequency rank" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/><NumericUpDown x:Name="IPlusOneFreqBox" Minimum="1000" Maximum="50000" Increment="1000"/></StackPanel>
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <Border Classes="feature-card">
+              <StackPanel Spacing="8">
+                <StackPanel Orientation="Horizontal" Spacing="8"><ToggleSwitch x:Name="FrequencyToggle"/><TextBlock Text="Frequency Marking" FontSize="15" FontWeight="Medium" VerticalAlignment="Center" Foreground="#FFFFFF"/></StackPanel>
+                <TextBlock Text="Underlines words within top N frequency" FontSize="12" Foreground="#71717A"/>
+                <StackPanel x:Name="FrequencyOptionsPanel" Spacing="8" Margin="16,0,0,0">
+                  <StackPanel Spacing="4"><TextBlock Text="Below frequency rank" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/><NumericUpDown x:Name="FrequencyTopBox" Minimum="1000" Maximum="50000" Increment="1000"/></StackPanel>
+                  <CheckBox x:Name="FrequencyAllStatesCheck" Content="Mark all states (not just New)"/>
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <Border Classes="feature-card">
+              <StackPanel Spacing="8">
+                <StackPanel Orientation="Horizontal" Spacing="8"><ToggleSwitch x:Name="BlurToggle"/><TextBlock Text="Blur / Spoiler Mode" FontSize="15" FontWeight="Medium" VerticalAlignment="Center" Foreground="#FFFFFF"/></StackPanel>
+                <TextBlock Text="Blurs words in selected states until hovered" FontSize="12" Foreground="#71717A"/>
+                <StackPanel x:Name="BlurOptionsPanel" Spacing="8" Margin="16,0,0,0">
+                  <StackPanel Spacing="4"><TextBlock Text="Blur strength" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/><Slider x:Name="BlurStrengthSlider" Minimum="1" Maximum="20" Width="250" HorizontalAlignment="Left"/></StackPanel>
+                  <CheckBox x:Name="BlurRevealCheck" Content="Reveal on hover"/>
+                  <StackPanel x:Name="BlurRevealOptionsPanel" Spacing="4"><TextBlock Text="Reveal delay (ms)" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/><NumericUpDown x:Name="BlurDelayBox" Minimum="0" Maximum="1000" Increment="50"/></StackPanel>
+                  <TextBlock Text="Blur these states:" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/>
+                  <WrapPanel Orientation="Horizontal">
+                    <CheckBox x:Name="BlurState0" Content="New" Margin="0,0,8,4"/><CheckBox x:Name="BlurState1" Content="Young" Margin="0,0,8,4"/><CheckBox x:Name="BlurState2" Content="Mature" Margin="0,0,8,4"/><CheckBox x:Name="BlurState3" Content="Blacklisted" Margin="0,0,8,4"/><CheckBox x:Name="BlurState4" Content="Due" Margin="0,0,8,4"/><CheckBox x:Name="BlurState5" Content="Mastered" Margin="0,0,8,4"/><CheckBox x:Name="BlurState6" Content="Redundant" Margin="0,0,8,4"/><CheckBox x:Name="BlurState7" Content="Suspended"/>
+                  </WrapPanel>
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <Border Classes="feature-card">
+              <StackPanel Spacing="8">
+                <StackPanel Orientation="Horizontal" Spacing="8"><ToggleSwitch x:Name="AutopauseToggle"/><TextBlock Text="Autopause" FontSize="15" FontWeight="Medium" VerticalAlignment="Center" Foreground="#FFFFFF"/></StackPanel>
+                <TextBlock Text="Pauses playback when hovering over subtitles" FontSize="12" Foreground="#71717A"/>
+                <StackPanel x:Name="AutopauseOptionsPanel" Spacing="4" Margin="16,0,0,0"><TextBlock Text="Pause delay (ms)" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/><NumericUpDown x:Name="AutopauseDelayBox" Minimum="0" Maximum="2000" Increment="100"/></StackPanel>
+              </StackPanel>
+            </Border>
+
+            <Border Classes="feature-card">
+              <StackPanel Spacing="8">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <ToggleSwitch x:Name="MiningToggle"/>
+                  <TextBlock Text="Mining" FontSize="15" FontWeight="Medium" VerticalAlignment="Center" Foreground="#FFFFFF"/>
+                </StackPanel>
+                <TextBlock Text="Add words to your Jiten study lists directly from the popup" FontSize="12" Foreground="#71717A"/>
+                <StackPanel x:Name="MiningOptionsPanel" Spacing="9" Margin="16,0,0,0">
+                  <CheckBox x:Name="MiningCaptureSentenceCheck" Content="Attach the subtitle line as an example sentence"/>
+                  <Grid ColumnDefinitions="130,*,Auto" RowDefinitions="Auto,Auto" RowSpacing="5">
+                    <TextBlock Text="Target word list" Classes="field-label"/>
+                    <ComboBox x:Name="MiningDeckBox" Grid.Column="1" HorizontalAlignment="Stretch"/>
+                    <Button x:Name="LoadMiningDecksButton" Grid.Column="2" Content="Load lists" Classes="secondary" Margin="8,0,0,0"/>
+                    <TextBlock x:Name="MiningDeckStatus" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="Load your Jiten study lists to choose a target." Classes="hint" TextWrapping="Wrap"/>
+                  </Grid>
+                  <CheckBox x:Name="MiningToDeckCheck" Content="Mine straight to this list (otherwise the popup asks which list)"/>
+                  <CheckBox x:Name="MiningAutoReviewCheck" Content="Also mine when grading a card"/>
+                  <CheckBox x:Name="MiningSkipPresentCheck" Content="Skip words already in the target list"/>
+                  <Grid ColumnDefinitions="130,*">
+                    <TextBlock Text="Double-click a word" Classes="field-label"/>
+                    <ComboBox x:Name="DoubleClickActionBox" Grid.Column="1" Width="180" HorizontalAlignment="Left"/>
+                  </Grid>
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <Border Classes="feature-card">
+              <StackPanel Spacing="6">
+                <StackPanel Orientation="Horizontal" Spacing="8"><ToggleSwitch x:Name="ReviewsToggle"/><TextBlock Text="Reviews" FontSize="15" FontWeight="Medium" VerticalAlignment="Center" Foreground="#FFFFFF"/></StackPanel>
+                <TextBlock Text="Grade cards from the popup. Turning this off hides the grade buttons and unbinds the review keys." Foreground="#A1A1AA" FontSize="13" TextWrapping="Wrap"/>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- MEDIA -->
+        <ScrollViewer x:Name="MediaPanel" IsVisible="False" VerticalScrollBarVisibility="Auto">
+          <StackPanel Margin="24,16" Spacing="16">
+            <TextBlock Text="Media" FontSize="20" FontWeight="Bold" Foreground="#FFFFFF"/>
+
+            <StackPanel Spacing="6">
+              <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <TextBlock Text="Jiten+" FontSize="15" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                  <TextBlock x:Name="JitenPlusTierText" Text="Not checked" Foreground="#C4B5FD" VerticalAlignment="Center"/>
+                  <TextBlock x:Name="JitenPlusQuotaText" Foreground="#A1A1AA" VerticalAlignment="Center"/>
+                </StackPanel>
+                <Button x:Name="RefreshJitenPlusButton" Grid.Column="1" Content="Refresh" Classes="secondary"/>
+              </Grid>
+              <TextBlock x:Name="JitenPlusStatusText" Text="Media attachment requires Jiten+." Classes="hint" TextWrapping="Wrap"/>
+            </StackPanel>
+
+            <Border x:Name="JitenPlusLockedBorder" IsVisible="False" Background="#2618172A" BorderBrush="#6D28D9" BorderThickness="1" CornerRadius="7" Padding="10">
+              <TextBlock Text="Jiten+ is required for screenshot, clip, and audio attachment. Word/sentence mining still works without it." Foreground="#C4B5FD" FontSize="12" TextWrapping="Wrap"/>
+            </Border>
+
+            <StackPanel x:Name="MediaJitenPlusPanel" Spacing="14">
+              <StackPanel Spacing="4">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <ToggleSwitch x:Name="MediaCaptureToggle"/>
+                  <TextBlock Text="Add a screenshot and audio when mining" FontSize="15" FontWeight="Medium" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock Text="Saves a screenshot and the spoken line onto the card, and displays them during SRS study." Classes="hint" Margin="32,0,0,0" TextWrapping="Wrap"/>
+              </StackPanel>
+
+              <StackPanel x:Name="MediaCaptureOptionsPanel" Spacing="14" Margin="16,0,0,0">
+                <StackPanel Spacing="8">
+                  <CheckBox x:Name="MediaImageCheck" Content="Screenshot"/>
+                  <StackPanel x:Name="MediaImageOptionsPanel" Spacing="8" Margin="20,0,0,0">
+                    <TextBlock Text="Screenshot capture position" Classes="field-label"/>
+                    <StackPanel Orientation="Horizontal" Spacing="16">
+                      <RadioButton x:Name="MediaImageCurrentRadio" Content="Current position" GroupName="MediaImageSource"/>
+                      <RadioButton x:Name="MediaImageMidpointRadio" Content="Middle of the subtitles" GroupName="MediaImageSource"/>
+                    </StackPanel>
+                    <TextBlock Text="Subtitle display" Classes="field-label"/>
+                    <StackPanel Orientation="Horizontal" Spacing="14">
+                      <RadioButton x:Name="MediaBurnNoneRadio" Content="None" GroupName="MediaBurn"/>
+                      <RadioButton x:Name="MediaBurnOriginalRadio" Content="No highlights" GroupName="MediaBurn"/>
+                      <RadioButton x:Name="MediaBurnColoredRadio" Content="With knowledge highlights" GroupName="MediaBurn"/>
+                    </StackPanel>
+                    <StackPanel Spacing="3">
+                      <CheckBox x:Name="MediaAnimatedCheck" Content="Use a short clip instead"/>
+                      <TextBlock Text="Creates an animated WebP covering the subtitle line instead of a still screenshot." Classes="hint" Margin="28,0,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                  </StackPanel>
+                </StackPanel>
+
+                <StackPanel Spacing="8">
+                  <CheckBox x:Name="MediaAudioCheck" Content="Audio"/>
+                  <StackPanel x:Name="MediaAudioOptionsPanel" Orientation="Horizontal" Spacing="18" Margin="20,0,0,0">
+                    <CheckBox x:Name="MediaStereoCheck" Content="Stereo"/>
+                    <CheckBox x:Name="MediaAutoTrimCheck" Content="Trim the silence automatically"/>
+                  </StackPanel>
+                </StackPanel>
+
+                <StackPanel Spacing="8">
+                  <CheckBox x:Name="MediaReviewCheck" Content="Check everything before saving"/>
+                  <StackPanel x:Name="MediaReviewOptionsPanel" Spacing="5" Margin="20,0,0,0">
+                    <Grid ColumnDefinitions="180,*">
+                      <TextBlock Text="Nearby lines" Classes="field-label"/>
+                      <NumericUpDown x:Name="MediaContextLinesBox" Grid.Column="1" Minimum="0" Maximum="5" Increment="1" Width="100" HorizontalAlignment="Left"/>
+                    </Grid>
+                    <TextBlock Text="Makes nearby subtitle lines available in the review window so you can include extra sentence context when useful." Classes="hint" TextWrapping="Wrap"/>
+                  </StackPanel>
+                </StackPanel>
+
+                <StackPanel Spacing="6">
+                  <TextBlock Text="Warn before replacing the existing media from a card" Classes="field-label"/>
+                  <StackPanel Orientation="Horizontal" Spacing="14">
+                    <RadioButton x:Name="MediaOverwriteAlwaysRadio" Content="Always" GroupName="MediaOverwrite"/>
+                    <RadioButton x:Name="MediaOverwriteSessionRadio" Content="Once per session" GroupName="MediaOverwrite"/>
+                    <RadioButton x:Name="MediaOverwriteNeverRadio" Content="Never" GroupName="MediaOverwrite"/>
+                  </StackPanel>
+                </StackPanel>
+
+                <Expander Header="Advanced">
+                  <Border Classes="feature-card" Margin="0,8,0,0">
+                    <StackPanel Spacing="12">
+                      <TextBlock Text="SCREENSHOT" Classes="section-header"/>
+                      <Grid ColumnDefinitions="210,*" RowDefinitions="Auto,Auto" RowSpacing="7">
+                        <TextBlock Text="Longest side (px)" Classes="field-label"/><NumericUpDown x:Name="MediaImageMaxEdgeBox" Grid.Column="1" Minimum="640" Maximum="2560" Increment="80"/>
+                        <TextBlock Grid.Row="1" Text="Quality" Classes="field-label"/><NumericUpDown x:Name="MediaImageQualityBox" Grid.Row="1" Grid.Column="1" Minimum="40" Maximum="100" Increment="1"/>
+                      </Grid>
+                      <TextBlock Text="ANIMATED CLIP" Classes="section-header"/>
+                      <Grid ColumnDefinitions="210,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="7">
+                        <TextBlock Text="Framerate" Classes="field-label"/><NumericUpDown x:Name="MediaAnimTargetFpsBox" Grid.Column="1" Minimum="5" Maximum="30" Increment="1"/>
+                        <TextBlock Grid.Row="1" Text="Width" Classes="field-label"/><NumericUpDown x:Name="MediaAnimMaxEdgeBox" Grid.Row="1" Grid.Column="1" Minimum="320" Maximum="1600" Increment="80"/>
+                        <TextBlock Grid.Row="2" Text="Frame limit" Classes="field-label"/><NumericUpDown x:Name="MediaAnimMaxFramesBox" Grid.Row="2" Grid.Column="1" Minimum="30" Maximum="300" Increment="10"/>
+                        <TextBlock Grid.Row="3" Text="Quality" Classes="field-label"/><NumericUpDown x:Name="MediaAnimQualityBox" Grid.Row="3" Grid.Column="1" Minimum="20" Maximum="100" Increment="5"/>
+                        <TextBlock Grid.Row="4" Text="Size limit (MB)" Classes="field-label"/><NumericUpDown x:Name="MediaAnimMaxMbBox" Grid.Row="4" Grid.Column="1" Minimum="0.5" Maximum="5" Increment="0.5" FormatString="0.0"/>
+                        <TextBlock Grid.Row="5" Text="Lowest smoothness" Classes="field-label"/><NumericUpDown x:Name="MediaAnimMinFpsBox" Grid.Row="5" Grid.Column="1" Minimum="1" Maximum="30" Increment="1"/>
+                      </Grid>
+                      <TextBlock Text="AUDIO" Classes="section-header"/>
+                      <Grid ColumnDefinitions="210,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="7">
+                        <TextBlock Text="Bitrate (kbps)" Classes="field-label"/><NumericUpDown x:Name="MediaAudioBitrateBox" Grid.Column="1" Minimum="24" Maximum="128" Increment="8"/>
+                        <TextBlock Grid.Row="1" Text="Extra at the start (ms)" Classes="field-label"/><NumericUpDown x:Name="MediaAudioLeadBox" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="2000" Increment="50"/>
+                        <TextBlock Grid.Row="2" Text="Extra at the end (ms)" Classes="field-label"/><NumericUpDown x:Name="MediaAudioTailBox" Grid.Row="2" Grid.Column="1" Minimum="0" Maximum="2000" Increment="50"/>
+                        <TextBlock Grid.Row="3" Text="Size limit (MB)" Classes="field-label"/><NumericUpDown x:Name="MediaAudioMaxMbBox" Grid.Row="3" Grid.Column="1" Minimum="0.2" Maximum="5" Increment="0.5" FormatString="0.0"/>
+                        <TextBlock Grid.Row="4" Text="Room to trim (s)" Classes="field-label"/><NumericUpDown x:Name="MediaAudioMarginBox" Grid.Row="4" Grid.Column="1" Minimum="1" Maximum="20" Increment="1" FormatString="0"/>
+                      </Grid>
+                    </StackPanel>
+                  </Border>
+                </Expander>
+              </StackPanel>
+            </StackPanel>
+
+            <Border Classes="divider"/>
+            <TextBlock Text="MPC-BE" Classes="section-header"/>
+            <Border Classes="feature-card">
+              <StackPanel Spacing="8">
+                <CheckBox x:Name="AutoLoadSubtitlesCheck" Content="Automatically load subtitles for the current media"/>
+                <TextBlock Text="Subtitle track" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/>
+                <ComboBox x:Name="SubtitleTrackBox" HorizontalAlignment="Stretch"/>
+                <Button x:Name="LoadExternalSubtitleButton" Content="Load external subtitle..." Classes="secondary" HorizontalAlignment="Left"/>
+                <Grid ColumnDefinitions="110,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                  <TextBlock Text="Current media" Classes="field-label"/><TextBlock x:Name="MediaPathText" Grid.Column="1" Text="(none)" Classes="hint"/>
+                  <TextBlock Grid.Row="1" Text="Current subtitle" Classes="field-label"/><TextBlock x:Name="SubtitlePathText" Grid.Row="1" Grid.Column="1" Text="(none)" Classes="hint"/>
+                  <TextBlock Grid.Row="2" Text="ffmpeg" Classes="field-label"/><TextBlock x:Name="MiningFfmpegStatusText" Grid.Row="2" Grid.Column="1" Classes="hint" TextWrapping="Wrap"/>
+                </Grid>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- POPUP -->
+        <ScrollViewer x:Name="PopupPanel" IsVisible="False" VerticalScrollBarVisibility="Auto">
+          <StackPanel Margin="24,16" Spacing="16">
+            <TextBlock Text="Popup" FontSize="20" FontWeight="Bold" Foreground="#FFFFFF"/>
+
+            <StackPanel Spacing="4">
+              <TextBlock Text="Trigger" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/>
+              <StackPanel Orientation="Horizontal" Spacing="16"><RadioButton x:Name="PopupHoverRadio" Content="Hover" GroupName="PopupTrigger"/><RadioButton x:Name="PopupClickRadio" Content="Click" GroupName="PopupTrigger"/></StackPanel>
+            </StackPanel>
+
+            <Border Classes="divider"/>
+            <StackPanel Spacing="8">
+              <TextBlock Text="TIMING" Classes="section-header"/>
+              <StackPanel Spacing="4"><TextBlock Text="Hover delay (ms)" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/><NumericUpDown x:Name="PopupHoverDelayBox" Minimum="10" Maximum="3000" Increment="10"/></StackPanel>
+              <StackPanel Spacing="4"><TextBlock Text="Switch delay for a word on another line (ms)" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium" TextWrapping="Wrap"/><NumericUpDown x:Name="PopupSwitchDelayBox" Minimum="0" Maximum="2000" Increment="50"/></StackPanel>
+              <CheckBox x:Name="PopupAutoHideCheck" Content="Auto-hide popup"/>
+              <StackPanel x:Name="PopupAutoHideOptionsPanel" Spacing="4" Margin="24,0,0,0"><TextBlock Text="Auto-hide delay (ms)" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/><NumericUpDown x:Name="PopupHideDelayBox" Minimum="100" Maximum="5000" Increment="100"/></StackPanel>
+              <CheckBox x:Name="PopupHideAfterActionCheck" Content="Hide popup after action"/>
+            </StackPanel>
+
+            <Border Classes="divider"/>
+            <StackPanel Spacing="8">
+              <TextBlock Text="Position" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/>
+              <StackPanel Orientation="Horizontal" Spacing="16"><RadioButton x:Name="PopupAboveRadio" Content="Above subtitle" GroupName="PopupPosition"/><RadioButton x:Name="PopupBelowRadio" Content="Below subtitle" GroupName="PopupPosition"/><RadioButton x:Name="PopupFixedRadio" Content="Fixed" GroupName="PopupPosition"/></StackPanel>
+              <StackPanel x:Name="PopupFixedOptionsPanel" Spacing="4"><TextBlock Text="Anchor" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/><ComboBox x:Name="PopupAnchorBox" HorizontalAlignment="Stretch"/></StackPanel>
+              <StackPanel Spacing="4"><TextBlock Text="Gap from the word, or margin from the screen edge when fixed (px)" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium" TextWrapping="Wrap"/><NumericUpDown x:Name="PopupOffsetBox" Minimum="0" Maximum="600" Increment="10"/></StackPanel>
+            </StackPanel>
+
+            <Border Classes="divider"/>
+            <StackPanel Spacing="8">
+              <TextBlock Text="APPEARANCE" Classes="section-header"/>
+              <Grid ColumnDefinitions="100,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
+                <TextBlock Text="Font scale" Classes="field-label"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8"><Slider x:Name="PopupFontScaleSlider" Minimum="0.5" Maximum="1.5" Width="250" TickFrequency="0.05" IsSnapToTickEnabled="True"/><TextBlock x:Name="PopupFontScaleValue" VerticalAlignment="Center" Foreground="#FFFFFF"/></StackPanel>
+                <TextBlock Grid.Row="1" Text="BG opacity" Classes="field-label"/>
+                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="8"><Slider x:Name="PopupBgOpacitySlider" Minimum="0" Maximum="100" Width="250"/><TextBlock x:Name="PopupBgOpacityValue" VerticalAlignment="Center" Foreground="#FFFFFF"/></StackPanel>
+                <TextBlock Grid.Row="2" Text="Background" Classes="field-label"/>
+                <ColorPicker x:Name="PopupBgColorPicker" Grid.Row="2" Grid.Column="1" IsAlphaVisible="False" HorizontalAlignment="Left"/>
+                <TextBlock Grid.Row="3" Text="Max width" Classes="field-label"/>
+                <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Spacing="8"><Slider x:Name="PopupMaxWidthBox" Minimum="250" Maximum="1200" Width="250" TickFrequency="10" IsSnapToTickEnabled="True"/><TextBlock x:Name="PopupMaxWidthValue" VerticalAlignment="Center" Foreground="#FFFFFF"/></StackPanel>
+                <TextBlock Grid.Row="4" Text="Max meanings" Classes="field-label"/>
+                <NumericUpDown x:Name="PopupMaxMeaningsBox" Grid.Row="4" Grid.Column="1" Minimum="1" Maximum="20" Increment="1"/>
+              </Grid>
+            </StackPanel>
+
+            <Border Classes="divider"/>
+            <StackPanel Spacing="8">
+              <TextBlock Text="CONTENT" Classes="section-header"/>
+              <WrapPanel Orientation="Horizontal"><CheckBox x:Name="PopupFuriganaCheck" Content="Furigana" Margin="0,0,16,0"/><CheckBox x:Name="PopupPitchCheck" Content="Pitch accent" Margin="0,0,16,0"/><CheckBox x:Name="PopupFrequencyCheck" Content="Frequency rank" Margin="0,0,16,0"/><CheckBox x:Name="PopupConjugationCheck" Content="Conjugation"/></WrapPanel>
+            </StackPanel>
+
+            <Border Classes="divider"/>
+            <StackPanel Spacing="8">
+              <TextBlock Text="ACTION BUTTONS" Classes="section-header"/>
+              <CheckBox x:Name="PopupStateActionsCheck" Content="Show state actions"/>
+              <StackPanel x:Name="PopupStateActionsOptionsPanel" Margin="24,0,0,0" Spacing="4"><CheckBox x:Name="PopupNeverForgetCheck" Content="Never Forget"/><CheckBox x:Name="PopupBlacklistCheck" Content="Blacklist"/><CheckBox x:Name="PopupSuspendCheck" Content="Suspend"/><CheckBox x:Name="PopupForgetCheck" Content="Forget"/></StackPanel>
+              <StackPanel x:Name="PopupPitchDiagramPanel" Margin="24,0,0,0"><CheckBox x:Name="PopupPitchDiagramCheck" Content="Draw pitch accent diagrams instead of numbers"/></StackPanel>
+              <CheckBox x:Name="PopupDeckCheck" Content="Show which lists and decks the word is in"/>
+              <CheckBox x:Name="PopupReviewCheck" Content="Show review buttons"/>
+              <CheckBox x:Name="PopupTwoGradesCheck" Content="Use two grades (Pass/Fail) instead of four"/>
+              <CheckBox x:Name="PopupActionsBottomCheck" Content="Move the action buttons below the entry"/>
+              <CheckBox x:Name="PopupHeadwordLinkCheck" Content="Open the word on jiten.moe when its headword is clicked"/>
+            </StackPanel>
+
+            <Border Classes="divider"/>
+            <StackPanel Spacing="8">
+              <TextBlock Text="STATE ROTATION" Classes="section-header"/>
+              <TextBlock Text="Rotates a word through its Master, Blacklist and Suspended states with a single pair of keys." FontSize="12" Foreground="#71717A" TextWrapping="Wrap"/>
+              <CheckBox x:Name="RotateStatesToggle" Content="Rotate states"/>
+              <StackPanel x:Name="RotateOptionsPanel" Margin="24,0,0,0" Spacing="4">
+                <CheckBox x:Name="PopupRotateActionsCheck" Content="Show rotate actions"/>
+                <CheckBox x:Name="RotateCycleCheck" Content="Rotate cycle"/>
+                <TextBlock Text="Stays among the states instead of passing through a cleared step" Classes="hint" Margin="28,0,0,0"/>
+                <TextBlock Text="States in the cycle" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium" Margin="0,4,0,0"/>
+                <WrapPanel Orientation="Horizontal"><CheckBox x:Name="RotateNeverForgetCheck" Content="Master" Margin="0,0,16,0"/><CheckBox x:Name="RotateBlacklistCheck" Content="Blacklist" Margin="0,0,16,0"/><CheckBox x:Name="RotateSuspendedCheck" Content="Suspended"/></WrapPanel>
+              </StackPanel>
+            </StackPanel>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- KEYBINDS -->
+        <ScrollViewer x:Name="KeybindsPanel" IsVisible="False" VerticalScrollBarVisibility="Auto">
+          <StackPanel Margin="24,16" Spacing="16">
+            <TextBlock Text="Keybinds" FontSize="20" FontWeight="Bold" Foreground="#FFFFFF"/>
+            <TextBlock Text="Keyboard shortcuts for popup actions (only active when popup is visible)" FontSize="12" Foreground="#71717A" TextWrapping="Wrap"/>
+            <TextBlock Text="Use key names such as 1, 2, a, Ctrl+s, Shift+r, etc." FontSize="11" Foreground="#52525B" TextWrapping="Wrap"/>
+            <Border Classes="feature-card"><StackPanel Spacing="12"><TextBlock Text="REVIEW" Classes="section-header"/><Grid x:Name="ReviewKeybindGrid" ColumnDefinitions="120,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8"/></StackPanel></Border>
+            <Border Classes="feature-card"><StackPanel Spacing="12"><TextBlock Text="STATE ACTIONS" Classes="section-header"/><Grid x:Name="StateKeybindGrid" ColumnDefinitions="120,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="8"/></StackPanel></Border>
+            <Border Classes="feature-card">
+              <StackPanel Spacing="12">
+                <TextBlock Text="SUBTITLE NAVIGATION" Classes="section-header"/>
+                <TextBlock Text="Always active, unlike the popup keybinds above." FontSize="11" Foreground="#71717A" TextWrapping="Wrap"/>
+                <Grid ColumnDefinitions="120,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
+                  <TextBlock Text="Previous subtitle" Classes="field-label"/><TextBox x:Name="PrevSubKeyBox" Grid.Column="1" Watermark="unbound" MaxWidth="200" HorizontalAlignment="Left"/>
+                  <TextBlock Grid.Row="1" Text="Next subtitle" Classes="field-label"/><TextBox x:Name="NextSubKeyBox" Grid.Row="1" Grid.Column="1" Watermark="unbound" MaxWidth="200" HorizontalAlignment="Left"/>
+                  <TextBlock Grid.Row="2" Text="Loop subtitle" Classes="field-label"/><TextBox x:Name="LoopSubKeyBox" Grid.Row="2" Grid.Column="1" Watermark="unbound" MaxWidth="200" HorizontalAlignment="Left"/>
+                  <TextBlock Grid.Row="3" Text="Subtitle earlier" Classes="field-label"/><TextBox x:Name="SubtitleEarlierKeyBox" Grid.Row="3" Grid.Column="1" Watermark="unbound" MaxWidth="200" HorizontalAlignment="Left"/>
+                  <TextBlock Grid.Row="4" Text="Subtitle later" Classes="field-label"/><TextBox x:Name="SubtitleLaterKeyBox" Grid.Row="4" Grid.Column="1" Watermark="unbound" MaxWidth="200" HorizontalAlignment="Left"/>
+                  <TextBlock Grid.Row="5" Text="Offset step (ms)" Classes="field-label"/><NumericUpDown x:Name="SubtitleOffsetStepBox" Grid.Row="5" Grid.Column="1" Minimum="1" Maximum="5000" Increment="1" Width="120" HorizontalAlignment="Left"/>
+                </Grid>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- ADVANCED -->
+        <ScrollViewer x:Name="AdvancedPanel" IsVisible="False" VerticalScrollBarVisibility="Auto">
+          <StackPanel Margin="24,16" Spacing="16">
+            <TextBlock Text="Advanced" FontSize="20" FontWeight="Bold" Foreground="#FFFFFF"/>
+
+            <StackPanel Spacing="8">
+              <TextBlock Text="STARTUP" Classes="section-header"/>
+              <CheckBox x:Name="AutostartToggle" Content="Start automatically when a file is opened"/>
+              <TextBlock Text="Turn this off to keep subtitles untouched until you ask for them. The key below starts or stops JitenMPC-BE's reader integration." Classes="hint"/>
+              <StackPanel Orientation="Horizontal" Spacing="8"><TextBlock Text="Start key" Classes="field-label"/><TextBox x:Name="StartKeyBox" Width="120" Watermark="F10"/></StackPanel>
+              <TextBlock Text="A key name such as F10, Ctrl+j or Alt+s." Classes="hint"/>
+            </StackPanel>
+
+            <Border Classes="divider"/>
+            <StackPanel Spacing="4"><TextBlock Text="Parse cache size" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/><NumericUpDown x:Name="CacheSizeBox" Minimum="500" Maximum="10000" Increment="500"/><TextBlock Text="Number of parsed subtitles kept in memory." Classes="hint"/></StackPanel>
+            <Border Classes="divider"/>
+            <CheckBox x:Name="PreparseToggle" Content="Enable subtitle pre-parsing"/>
+            <Border Classes="divider"/>
+
+            <StackPanel Spacing="4">
+              <TextBlock Text="MOUSE INTERACTION" Classes="section-header"/>
+              <TextBlock Text="Interaction zone (%)" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium" Margin="0,4,0,0"/>
+              <StackPanel Orientation="Horizontal" Spacing="8"><Slider x:Name="MouseZoneSlider" Minimum="30" Maximum="100" Width="250" TickFrequency="5" IsSnapToTickEnabled="True"/><TextBlock x:Name="MouseZoneValue" VerticalAlignment="Center" Foreground="#FFFFFF"/></StackPanel>
+              <TextBlock Text="Mouse events are only tracked in this percentage of the video from the bottom." Classes="hint"/>
+              <TextBlock Text="Fades a clickable button into the top-right corner of the video while the mouse moves." Classes="hint"/>
+              <CheckBox x:Name="SubtitleNavButtonsCheck" Content="Show previous/next subtitle buttons" Margin="0,8,0,0"/>
+              <TextBlock Text="Buttons in the bottom corners jump to the previous or next subtitle line." Classes="hint"/>
+            </StackPanel>
+
+            <Border Classes="divider"/>
+            <StackPanel Spacing="8">
+              <TextBlock Text="DIAGNOSTICS" Classes="section-header"/>
+              <CheckBox x:Name="StatusOverlayCheck" Content="Show status overlay messages"/>
+              <CheckBox x:Name="DebugLoggingCheck" Content="Enable debug logging"/>
+              <CheckBox x:Name="ShowHitboxesCheck" Content="Show word hitboxes"/>
+              <TextBlock Text="Draws the clickable area of every word over the subtitle for debugging hover behavior." Classes="hint"/>
+              <Grid ColumnDefinitions="150,*" Margin="0,4,0,0"><TextBlock Text="Overlay height" Classes="field-label"/><NumericUpDown x:Name="OverlayHeightBox" Grid.Column="1" Classes="field" Minimum="80" Maximum="600" Increment="10"/></Grid>
+            </StackPanel>
+
+            <Border Classes="divider"/>
+            <StackPanel Spacing="4">
+              <TextBlock Text="Config file location" Foreground="#A1A1AA" FontSize="13" FontWeight="Medium"/>
+              <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8"><TextBlock x:Name="ConfigPathText" VerticalAlignment="Center" FontSize="12" Foreground="#71717A" TextWrapping="Wrap" IsHitTestVisible="False"/><Button x:Name="OpenConfigFolderButton" Grid.Column="1" Content="Open folder" Classes="secondary"/></Grid>
+            </StackPanel>
+          </StackPanel>
+        </ScrollViewer>
+      </Grid>
+    </Grid>
+
+    <Border Grid.Row="1" Background="#0F0F12" Padding="16,12" BorderBrush="#27272A" BorderThickness="0,1,0,0">
+      <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto">
+        <Button x:Name="ResetSectionButton" Content="Reset Section" Classes="secondary"/>
+        <TextBlock Grid.Column="1" Text="v0.4.0-preview.2" Margin="12,0,0,0" VerticalAlignment="Center" FontSize="11" Foreground="#52525B"/>
+        <Grid Grid.Column="2" ColumnDefinitions="*,Auto" Margin="12,0,16,0" VerticalAlignment="Center">
+          <Border HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,12,0" Background="#18181B" BorderBrush="#27272A" BorderThickness="1" CornerRadius="9" Padding="9,2">
+            <TextBlock x:Name="StatusText" Text="Ready." FontSize="11" TextTrimming="CharacterEllipsis" Foreground="#A1A1AA" MaxWidth="220"/>
+          </Border>
+          <CheckBox x:Name="AutoSaveToggle" Grid.Column="1" Content="Auto-save" FontSize="12" VerticalAlignment="Center"/>
+        </Grid>
+        <Button x:Name="CloseSettingsButton" Grid.Column="3" Content="Close" Classes="secondary" Margin="0,0,8,0"/>
+        <Button x:Name="SaveButton" Grid.Column="4" Content="Save" Classes="accent" Margin="0,0,8,0"/>
+        <Button x:Name="LaunchButton" Grid.Column="5" Content="Launch MPC-BE" Classes="accent"/>
+      </Grid>
+    </Border>
+  </Grid>
+</Window>

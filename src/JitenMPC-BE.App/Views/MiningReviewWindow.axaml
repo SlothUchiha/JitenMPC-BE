@@ -1,0 +1,55 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="JitenMpcBe.Views.MiningReviewWindow"
+        Title="Review mining media" Width="650" Height="690" MinWidth="560" MinHeight="560"
+        WindowStartupLocation="CenterOwner" Background="#111113">
+  <Grid Margin="20" RowDefinitions="Auto,*,Auto">
+    <StackPanel Spacing="4">
+      <TextBlock Text="Review mining media" FontSize="20" FontWeight="Bold" Foreground="White"/>
+      <TextBlock x:Name="WordText" FontSize="15" Foreground="#C4B5FD"/>
+    </StackPanel>
+    <ScrollViewer Grid.Row="1" Margin="0,16,0,16" VerticalScrollBarVisibility="Auto">
+      <StackPanel Spacing="14">
+        <Border x:Name="ImageBorder" Background="#18181B" BorderBrush="#3F3F46" BorderThickness="1" CornerRadius="8" Padding="8">
+          <StackPanel Spacing="8">
+            <TextBlock Text="Screenshot / clip" FontWeight="SemiBold" Foreground="#E4E4E7"/>
+            <Image x:Name="PreviewImage" MaxHeight="260" Stretch="Uniform"/>
+            <TextBlock x:Name="ImageStatusText" Foreground="#8F8F97" FontSize="12"/>
+            <Grid ColumnDefinitions="160,*">
+              <TextBlock Text="Capture position (s)" Foreground="#A1A1AA" VerticalAlignment="Center"/>
+              <NumericUpDown x:Name="ImageTimeBox" Grid.Column="1" Minimum="0" Maximum="999999" Increment="0.05" FormatString="0.000"/>
+            </Grid>
+          </StackPanel>
+        </Border>
+        <Border x:Name="AudioBorder" Background="#18181B" BorderBrush="#3F3F46" BorderThickness="1" CornerRadius="8" Padding="12">
+          <StackPanel Spacing="8">
+            <TextBlock Text="Audio" FontWeight="SemiBold" Foreground="#E4E4E7"/>
+            <Grid ColumnDefinitions="160,*" RowDefinitions="Auto,Auto" RowSpacing="7">
+              <TextBlock Text="Start (s)" Foreground="#A1A1AA" VerticalAlignment="Center"/>
+              <NumericUpDown x:Name="AudioStartBox" Grid.Column="1" Minimum="0" Maximum="999999" Increment="0.05" FormatString="0.000"/>
+              <TextBlock Grid.Row="1" Text="End (s)" Foreground="#A1A1AA" VerticalAlignment="Center"/>
+              <NumericUpDown x:Name="AudioEndBox" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="999999" Increment="0.05" FormatString="0.000"/>
+            </Grid>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <Button x:Name="PlayAudioButton" Content="Play audio" Padding="10,5"/>
+              <Button x:Name="StopAudioButton" Content="Stop" Padding="10,5"/>
+              <TextBlock x:Name="AudioStatusText" FontSize="12" Foreground="#8F8F97" VerticalAlignment="Center"/>
+            </StackPanel>
+          </StackPanel>
+        </Border>
+        <Border Background="#18181B" BorderBrush="#3F3F46" BorderThickness="1" CornerRadius="8" Padding="12">
+          <StackPanel Spacing="8">
+            <TextBlock Text="Sentence context" FontWeight="SemiBold" Foreground="#E4E4E7"/>
+            <TextBlock Text="Choose the nearby subtitle lines to attach to the mined card." FontSize="12" Foreground="#8F8F97"/>
+            <StackPanel x:Name="ContextPanel" Spacing="5"/>
+          </StackPanel>
+        </Border>
+        <TextBlock Text="Changing capture times here regenerates the final media when you save." FontSize="12" Foreground="#71717A" TextWrapping="Wrap"/>
+      </StackPanel>
+    </ScrollViewer>
+    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+      <Button x:Name="CancelButton" Content="Cancel" Padding="14,7"/>
+      <Button x:Name="SaveButton" Content="Save" Padding="16,7" Background="#6D28D9" Foreground="White"/>
+    </StackPanel>
+  </Grid>
+</Window>

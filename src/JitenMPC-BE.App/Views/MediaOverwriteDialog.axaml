@@ -1,0 +1,18 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="JitenMpcBe.Views.MediaOverwriteDialog"
+        Title="Existing mining media" Width="430" Height="210" CanResize="False"
+        WindowStartupLocation="CenterOwner" Background="#111113">
+  <Grid Margin="20" RowDefinitions="Auto,*,Auto">
+    <StackPanel Spacing="8">
+      <TextBlock Text="Existing media" FontSize="18" FontWeight="SemiBold" Foreground="White"/>
+      <TextBlock x:Name="MessageText" TextWrapping="Wrap" Foreground="#D4D4D8"/>
+    </StackPanel>
+    <TextBlock Grid.Row="1" Margin="0,12,0,0" Text="Choose whether this mining action should replace the existing media, keep the existing media, or be cancelled." TextWrapping="Wrap" FontSize="12" Foreground="#8F8F97"/>
+    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+      <Button x:Name="CancelButton" Content="Cancel mining" Padding="12,7"/>
+      <Button x:Name="SkipButton" Content="Keep existing" Padding="12,7"/>
+      <Button x:Name="ReplaceButton" Content="Replace" Padding="12,7" Background="#6D28D9" Foreground="White"/>
+    </StackPanel>
+  </Grid>
+</Window>

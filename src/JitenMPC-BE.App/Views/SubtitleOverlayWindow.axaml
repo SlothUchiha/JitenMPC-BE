@@ -1,0 +1,29 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="JitenMpcBe.Views.SubtitleOverlayWindow"
+        WindowDecorations="None"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        ShowInTaskbar="False"
+        ShowActivated="False"
+        CanResize="False"
+        Topmost="False">
+  <Grid x:Name="RootGrid" Background="Transparent" ClipToBounds="False" IsHitTestVisible="False">
+    <StackPanel x:Name="SubtitleStack" HorizontalAlignment="Stretch" ClipToBounds="False" />
+
+    <Border x:Name="StatusBorder" IsVisible="False" HorizontalAlignment="Center" VerticalAlignment="Top"
+            Margin="12" Background="#DD18181B" BorderBrush="#3F3F46" BorderThickness="1" CornerRadius="7" Padding="10,6">
+      <TextBlock x:Name="StatusOverlayText" Foreground="#F4F4F5" FontSize="13" />
+    </Border>
+
+
+    <Border x:Name="PrevHint" IsVisible="False" HorizontalAlignment="Left" VerticalAlignment="Center"
+            Margin="12" Background="#D918181B" BorderBrush="#52525B" BorderThickness="1" CornerRadius="18" Width="36" Height="36">
+      <TextBlock Text="‹" FontSize="26" Foreground="#F4F4F5" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,0" />
+    </Border>
+    <Border x:Name="NextHint" IsVisible="False" HorizontalAlignment="Right" VerticalAlignment="Center"
+            Margin="12" Background="#D918181B" BorderBrush="#52525B" BorderThickness="1" CornerRadius="18" Width="36" Height="36">
+      <TextBlock Text="›" FontSize="26" Foreground="#F4F4F5" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,0" />
+    </Border>
+  </Grid>
+</Window>

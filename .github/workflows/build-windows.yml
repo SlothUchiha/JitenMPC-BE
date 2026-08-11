@@ -1,0 +1,35 @@
+name: Build Windows preview
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Publish win-x64
+        shell: pwsh
+        run: >-
+          dotnet publish src/JitenMPC-BE.App/JitenMPC-BE.App.csproj
+          -c Release -r win-x64 --self-contained true -o publish
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:EnableCompressionInSingleFile=true
+      - name: Copy notices
+        shell: pwsh
+        run: |
+          Copy-Item README.md publish/
+          Copy-Item CHANGELOG.md publish/
+          Copy-Item THIRD-PARTY-NOTICES.md publish/
+          Copy-Item LICENSE-JitenMPV.txt publish/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: JitenMPC-BE-win-x64
+          path: publish/

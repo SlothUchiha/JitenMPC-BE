@@ -1,0 +1,10 @@
+.dotnet/
+.dotnet-install.ps1
+publish/
+**/bin/
+**/obj/
+settings.json
+JitenMPC-BE.log
+*.user
+*.suo
+.vs/

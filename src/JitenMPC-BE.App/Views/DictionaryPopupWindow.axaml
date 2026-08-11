@@ -1,0 +1,63 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="JitenMpcBe.Views.DictionaryPopupWindow"
+        WindowDecorations="None"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        TransparencyBackgroundFallback="Transparent"
+        ShowInTaskbar="False"
+        ShowActivated="False"
+        CanResize="False"
+        SizeToContent="WidthAndHeight"
+        Topmost="False">
+  <Window.Styles>
+    <Style Selector="Button.popupAction">
+      <Setter Property="Background" Value="#27272A" />
+      <Setter Property="Foreground" Value="#E4E4E7" />
+      <Setter Property="Padding" Value="8,4" />
+      <Setter Property="FontSize" Value="11" />
+    </Style>
+    <Style Selector="Button.mineAction"><Setter Property="Background" Value="#4C1D95" /><Setter Property="Foreground" Value="#EDE9FE" /></Style>
+    <Style Selector="Button.reviewAgain"><Setter Property="Background" Value="#3F1D1D" /><Setter Property="Foreground" Value="#FCA5A5" /></Style>
+    <Style Selector="Button.reviewHard"><Setter Property="Background" Value="#3F2D13" /><Setter Property="Foreground" Value="#FCD34D" /></Style>
+    <Style Selector="Button.reviewGood"><Setter Property="Background" Value="#14351F" /><Setter Property="Foreground" Value="#86EFAC" /></Style>
+    <Style Selector="Button.reviewEasy"><Setter Property="Background" Value="#172554" /><Setter Property="Foreground" Value="#93C5FD" /></Style>
+  </Window.Styles>
+  <Border x:Name="PopupBorder" Background="#C71A1A1A" BorderBrush="#3F3F46" BorderThickness="1" CornerRadius="8" Padding="12">
+    <StackPanel x:Name="RootStack" Spacing="5" MaxWidth="550">
+      <Button x:Name="HeadwordButton" Background="Transparent" BorderThickness="0" Padding="0" HorizontalAlignment="Left">
+        <TextBlock x:Name="HeadwordText" FontSize="23" FontWeight="SemiBold" Foreground="White" TextWrapping="Wrap" />
+      </Button>
+      <TextBlock x:Name="ReadingText" FontSize="15" Foreground="#D4D4D8" TextWrapping="Wrap" />
+      <TextBlock x:Name="PitchDiagramText" FontSize="13" Foreground="#C4B5FD" TextWrapping="Wrap" />
+      <TextBlock x:Name="MetaText" FontSize="12" Foreground="#A1A1AA" TextWrapping="Wrap" />
+      <TextBlock x:Name="MeaningText" FontSize="14" Foreground="#F4F4F5" TextWrapping="Wrap" />
+      <TextBlock x:Name="ConjugationText" FontSize="12" Foreground="#C4B5FD" TextWrapping="Wrap" />
+      <TextBlock x:Name="DeckText" FontSize="12" Foreground="#93C5FD" TextWrapping="Wrap" />
+      <TextBlock x:Name="StateText" FontSize="12" Foreground="#A1A1AA" TextWrapping="Wrap" />
+
+      <WrapPanel x:Name="StateActionsPanel" Margin="0,5,0,0" ItemSpacing="5" LineSpacing="5">
+        <Button x:Name="MineButton" Content="Mine" Classes="popupAction mineAction" />
+        <Button x:Name="NeverForgetButton" Content="Never Forget" Classes="popupAction" />
+        <Button x:Name="BlacklistButton" Content="Blacklist" Classes="popupAction" />
+        <Button x:Name="SuspendButton" Content="Suspend" Classes="popupAction" />
+        <Button x:Name="ForgetButton" Content="Forget" Classes="popupAction" />
+        <Button x:Name="RotateBackwardButton" Content="Rotate -" Classes="popupAction" />
+        <Button x:Name="RotateForwardButton" Content="Rotate +" Classes="popupAction" />
+      </WrapPanel>
+
+      <Border x:Name="DeckPickerBorder" IsVisible="False" Background="#E618181B" BorderBrush="#52525B" BorderThickness="1" CornerRadius="6" Padding="8" Margin="0,2,0,0" MaxHeight="180">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <StackPanel x:Name="DeckPickerPanel" Spacing="4"/>
+        </ScrollViewer>
+      </Border>
+
+      <WrapPanel x:Name="ReviewPanel" Margin="0,4,0,0" ItemSpacing="5" LineSpacing="5">
+        <Button x:Name="AgainButton" Content="Again" Classes="popupAction reviewAgain" />
+        <Button x:Name="HardButton" Content="Hard" Classes="popupAction reviewHard" />
+        <Button x:Name="GoodButton" Content="Good" Classes="popupAction reviewGood" />
+        <Button x:Name="EasyButton" Content="Easy" Classes="popupAction reviewEasy" />
+      </WrapPanel>
+    </StackPanel>
+  </Border>
+</Window>
