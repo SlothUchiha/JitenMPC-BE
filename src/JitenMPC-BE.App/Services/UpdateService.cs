@@ -214,10 +214,13 @@ public sealed class UpdateService
             var core = value.Split('.');
             if (core.Length is < 1 or > 4) return false;
             if (!int.TryParse(core[0], out var major)) return false;
-            if (core.Length > 1 && !int.TryParse(core[1], out var minor)) return false;
-            else if (core.Length <= 1) minor = 0;
-            if (core.Length > 2 && !int.TryParse(core[2], out var patch)) return false;
-            else if (core.Length <= 2) patch = 0;
+
+            var minor = 0;
+            if (core.Length > 1 && !int.TryParse(core[1], out minor)) return false;
+
+            var patch = 0;
+            if (core.Length > 2 && !int.TryParse(core[2], out patch)) return false;
+
             if (core.Length > 3 && !int.TryParse(core[3], out _)) return false;
 
             var prerelease = string.IsNullOrWhiteSpace(prereleaseText)
