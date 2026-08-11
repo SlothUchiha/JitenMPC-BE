@@ -673,7 +673,7 @@
     <Border Grid.Row="1" Background="#0F0F12" Padding="16,12" BorderBrush="#27272A" BorderThickness="0,1,0,0">
       <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto">
         <Button x:Name="ResetSectionButton" Content="Reset Section" Classes="secondary"/>
-        <TextBlock Grid.Column="1" Text="v0.4.0-preview.2" Margin="12,0,0,0" VerticalAlignment="Center" FontSize="11" Foreground="#52525B"/>
+        <TextBlock x:Name="AppVersionText" Grid.Column="1" Text="v0.5.0" Margin="12,0,0,0" VerticalAlignment="Center" FontSize="11" Foreground="#52525B"/>
         <Grid Grid.Column="2" ColumnDefinitions="*,Auto" Margin="12,0,16,0" VerticalAlignment="Center">
           <Border HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,12,0" Background="#18181B" BorderBrush="#27272A" BorderThickness="1" CornerRadius="9" Padding="9,2">
             <TextBlock x:Name="StatusText" Text="Ready." FontSize="11" TextTrimming="CharacterEllipsis" Foreground="#A1A1AA" MaxWidth="220"/>

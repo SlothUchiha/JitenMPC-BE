@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Reflection;
 using System.Globalization;
 using System.Text.Json;
 using Avalonia;
@@ -43,6 +44,7 @@ public sealed partial class MainWindow : Window
     {
         _runtime = runtime;
         AvaloniaXamlLoader.Load(this);
+        F<TextBlock>("AppVersionText").Text = $"v{GetApplicationVersion()}";
         _panels = [F<ScrollViewer>("GeneralPanel"), F<ScrollViewer>("AppearancePanel"), F<ScrollViewer>("FeaturesPanel"), F<ScrollViewer>("MediaPanel"), F<ScrollViewer>("PopupPanel"), F<ScrollViewer>("KeybindsPanel"), F<ScrollViewer>("AdvancedPanel")];
         _track = F<ComboBox>("SubtitleTrackBox"); _theme = F<ComboBox>("ThemeBox"); _font = F<ComboBox>("FontBox");
         _status = F<TextBlock>("StatusText"); _version = F<TextBlock>("MpcVersionText"); _media = F<TextBlock>("MediaPathText"); _subtitle = F<TextBlock>("SubtitlePathText"); _updateStatus = F<TextBlock>("UpdateStatusText");
@@ -71,6 +73,15 @@ public sealed partial class MainWindow : Window
     }
 
     private T F<T>(string name) where T : Control => this.FindControl<T>(name)!;
+    private static string GetApplicationVersion()
+    {
+        var assembly = typeof(MainWindow).Assembly;
+        var version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+            ?? assembly.GetName().Version?.ToString()
+            ?? "0.0.0";
+        var buildMetadata = version.IndexOf('+');
+        return buildMetadata >= 0 ? version[..buildMetadata] : version;
+    }
 
     private void WireEvents()
     {
