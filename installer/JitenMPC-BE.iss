@@ -5,7 +5,6 @@
 #define AppPublisher "SlothUchiha"
 #define AppURL "https://github.com/SlothUchiha/JitenMPC-BE"
 #define AppExeName "JitenMPC-BE.exe"
-
 [Setup]
 AppId={{52307245-8D26-458A-B03D-3D37298A1DC1}
 AppName={#AppName}
@@ -19,7 +18,6 @@ DefaultDirName={localappdata}\Programs\JitenMPC-BE
 DefaultGroupName=JitenMPC-BE
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
-SetupArchitecture=x64
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 UninstallDisplayName=JitenMPC-BE
@@ -31,7 +29,6 @@ SolidCompression=yes
 WizardStyle=modern
 CloseApplications=yes
 RestartApplications=no
-
 [Files]
 Source: "..\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
